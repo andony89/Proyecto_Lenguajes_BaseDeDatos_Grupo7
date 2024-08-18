@@ -37,3 +37,19 @@ SELECT h.historicoID, o.Fecha AS OrdenFecha, p.Nombre AS ProductoNombre, h.canti
 FROM historicoOrdenesCompra h
 JOIN OrdenesCompa o ON h.ordenCompraID = o.ordenCompraID
 JOIN Productos p ON h.productoID = p.ProductoID;
+
+CREATE VIEW vista_empleados_detalles AS
+SELECT EmpleadoID, Nombre AS EmpleadoNombre, Telefono AS EmpleadoTelefono, Email AS EmpleadoEmail, Posicion AS EmpleadoPosicion, Salario AS EmpleadoSalario, FechaContratacion AS EmpleadoFechaContratacion
+FROM Empleados;
+
+CREATE VIEW vista_clientes_detalles AS
+SELECT CedulaID, Nombre AS ClienteNombre, Telefono AS ClienteTelefono, Direccion AS ClienteDireccion, Email AS ClienteEmail
+FROM Clientes;
+
+CREATE VIEW vista_factura_detalles AS
+SELECT f.FacturaID, v.Fecha AS VentaFecha, c.Nombre AS ClienteNombre, p.Nombre AS ProductoNombre, f.Cantidad, f.PrecioUnitario, f.PrecioTotal
+FROM Factura f
+JOIN Ventas v ON f.VentaID = v.VentaID
+JOIN Productos p ON f.ProductoID = p.ProductoID
+JOIN Clientes c ON v.CedulaID = c.CedulaID;
+
