@@ -24,6 +24,7 @@ EXCEPTION
         RETURN 0;
 END calcular_precio_total_producto;
 
+-----------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION obtener_nombre_proveedor (
     p_proveedorID IN NUMBER
@@ -41,6 +42,7 @@ EXCEPTION
         RETURN NULL;
 END obtener_nombre_proveedor;
 
+------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION verificar_stock_bajo (
     p_productoID IN NUMBER,
@@ -58,7 +60,7 @@ EXCEPTION
     WHEN NO_DATA_FOUND THEN
         RETURN FALSE;
 END verificar_stock_bajo;
-
+----------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION total_ventas_producto (
     p_productoID IN NUMBER
@@ -66,10 +68,9 @@ CREATE OR REPLACE FUNCTION total_ventas_producto (
 IS
     v_total NUMBER;
 BEGIN
-    SELECT SUM(v.total) INTO v_total
-    FROM Ventas v
-    JOIN Productos p ON v.ProductoID = p.ProductoID
-    WHERE p.ProductoID = p_productoID;
+    SELECT SUM(f.PrecioTotal) INTO v_total
+    FROM Factura f
+    WHERE f.ProductoID = p_productoID;
 
     RETURN v_total;
 EXCEPTION
@@ -78,6 +79,7 @@ EXCEPTION
 END total_ventas_producto;
 
 
+-----------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION obtener_saldo_proveedor (
     p_proveedorID IN NUMBER
@@ -86,7 +88,7 @@ IS
     v_saldo NUMBER;
 BEGIN
     SELECT SUM(o.Total) INTO v_saldo
-    FROM OrdenesCompa o
+    FROM OrdenesCompra o
     WHERE o.ProveedorID = p_proveedorID;
 
     RETURN v_saldo;
@@ -96,6 +98,8 @@ EXCEPTION
 END obtener_saldo_proveedor;
 
 
+---------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION calcular_total_compras (
     p_proveedorID IN NUMBER
 ) RETURN NUMBER
@@ -103,7 +107,7 @@ IS
     v_total NUMBER;
 BEGIN
     SELECT SUM(Total) INTO v_total
-    FROM OrdenesCompa
+    FROM OrdenesCompra
     WHERE ProveedorID = p_proveedorID;
 
     RETURN v_total;
@@ -113,15 +117,19 @@ EXCEPTION
 END calcular_total_compras;
 
 
+
+-------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION obtener_fecha_ultima_venta (
     p_productoID IN NUMBER
 ) RETURN DATE
 IS
     v_fecha DATE;
 BEGIN
-    SELECT MAX(Fecha) INTO v_fecha
-    FROM Ventas
-    WHERE ProductoID = p_productoID;
+    SELECT MAX(v.Fecha) INTO v_fecha
+    FROM Factura fa
+    JOIN Ventas v ON fa.VentaID = v.VentaID
+    WHERE fa.ProductoID = p_productoID;
 
     RETURN v_fecha;
 EXCEPTION
@@ -130,8 +138,10 @@ EXCEPTION
 END obtener_fecha_ultima_venta;
 
 
-CREATE OR REPLACE FUNCTION cantidad_total_productos (
-) RETURN NUMBER
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION cantidad_total_productos
+RETURN NUMBER
 IS
     v_total NUMBER;
 BEGIN
