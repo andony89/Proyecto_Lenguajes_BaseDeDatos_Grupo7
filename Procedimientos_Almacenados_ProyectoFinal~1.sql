@@ -374,7 +374,7 @@ END EliminarOrdenCompra;
 CREATE OR REPLACE PROCEDURE CrearVenta(
     p_Fecha DATE,
     p_CedulaID NUMBER,
-    p_Total DOUBLE
+    p_Total NUMBER  -- Cambiado de DOUBLE a NUMBER
 ) AS
 BEGIN
     INSERT INTO Ventas (Fecha, CedulaID, Total)
@@ -386,7 +386,7 @@ CREATE OR REPLACE PROCEDURE LeerVenta(
     p_VentaID NUMBER,
     p_Fecha OUT DATE,
     p_CedulaID OUT NUMBER,
-    p_Total OUT DOUBLE
+    p_Total OUT NUMBER
 ) AS
 BEGIN
     SELECT Fecha, CedulaID, Total
@@ -400,7 +400,7 @@ CREATE OR REPLACE PROCEDURE ActualizarVenta(
     p_VentaID NUMBER,
     p_Fecha DATE,
     p_CedulaID NUMBER,
-    p_Total DOUBLE
+    p_Total NUMBER
 ) AS
 BEGIN
     UPDATE Ventas
@@ -422,8 +422,8 @@ CREATE OR REPLACE PROCEDURE CrearFactura(
     p_VentaID NUMBER,
     p_ProductoID NUMBER,
     p_Cantidad NUMBER,
-    p_PrecioUnitario DOUBLE,
-    p_PrecioTotal DOUBLE
+    p_PrecioUnitario NUMBER,
+    p_PrecioTotal NUMBER
 ) AS
 BEGIN
     INSERT INTO Factura (VentaID, ProductoID, Cantidad, PrecioUnitario, PrecioTotal)
@@ -436,8 +436,8 @@ CREATE OR REPLACE PROCEDURE LeerFactura(
     p_VentaID OUT NUMBER,
     p_ProductoID OUT NUMBER,
     p_Cantidad OUT NUMBER,
-    p_PrecioUnitario OUT DOUBLE,
-    p_PrecioTotal OUT DOUBLE
+    p_PrecioUnitario OUT NUMBER,
+    p_PrecioTotal OUT NUMBER
 ) AS
 BEGIN
     SELECT VentaID, ProductoID, Cantidad, PrecioUnitario, PrecioTotal
@@ -452,8 +452,8 @@ CREATE OR REPLACE PROCEDURE ActualizarFactura(
     p_VentaID NUMBER,
     p_ProductoID NUMBER,
     p_Cantidad NUMBER,
-    p_PrecioUnitario DOUBLE,
-    p_PrecioTotal DOUBLE
+    p_PrecioUnitario NUMBER,
+    p_PrecioTotal NUMBER
 ) AS
 BEGIN
     UPDATE Factura
