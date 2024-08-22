@@ -1,4 +1,4 @@
---funciones 8 de las 15
+--funciones 15 de las 15
 
 CREATE OR REPLACE FUNCTION calcular_precio_total_producto (
     p_productoID IN NUMBER
@@ -154,3 +154,128 @@ EXCEPTION
         RETURN 0;
 END cantidad_total_productos;
 
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION calcular_salario_anual (
+    p_empleadoID IN NUMBER
+) RETURN NUMBER
+IS
+    v_salario NUMBER;
+BEGIN
+    SELECT Salario INTO v_salario
+    FROM Empleados
+    WHERE EmpleadoID = p_empleadoID;
+
+    RETURN v_salario * 12;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 0;
+END calcular_salario_anual;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION obtener_descripcion_categoria (
+    p_categoriaID IN NUMBER
+) RETURN VARCHAR2
+IS
+    v_descripcion VARCHAR2(255);
+BEGIN
+    SELECT Descripcion INTO v_descripcion
+    FROM Categorias
+    WHERE CategoriaID = p_categoriaID;
+
+    RETURN v_descripcion;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END obtener_descripcion_categoria;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION calcular_total_productos_proveedor (
+    p_proveedorID IN NUMBER
+) RETURN NUMBER
+IS
+    v_total NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_total
+    FROM Productos
+    WHERE ProveedorID = p_proveedorID;
+
+    RETURN v_total;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 0;
+END calcular_total_productos_proveedor;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION obtener_fecha_ultima_orden_compra (
+    p_proveedorID IN NUMBER
+) RETURN DATE
+IS
+    v_fecha DATE;
+BEGIN
+    SELECT MAX(Fecha) INTO v_fecha
+    FROM OrdenesCompra
+    WHERE ProveedorID = p_proveedorID;
+
+    RETURN v_fecha;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END obtener_fecha_ultima_orden_compra;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION total_productos_vendidos (
+    p_ventaID IN NUMBER
+) RETURN NUMBER
+IS
+    v_total NUMBER;
+BEGIN
+    SELECT SUM(Cantidad) INTO v_total
+    FROM Factura
+    WHERE VentaID = p_ventaID;
+
+    RETURN v_total;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 0;
+END total_productos_vendidos;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION calcular_total_ordenes_estado (
+    p_estado IN VARCHAR2
+) RETURN NUMBER
+IS
+    v_total NUMBER;
+BEGIN
+    SELECT SUM(Total) INTO v_total
+    FROM OrdenesCompra
+    WHERE Estado = p_estado;
+
+    RETURN v_total;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 0;
+END calcular_total_ordenes_estado;
+
+-------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION obtener_nombre_cliente (
+    p_cedulaID IN NUMBER
+) RETURN VARCHAR2
+IS
+    v_nombre VARCHAR2(100);
+BEGIN
+    SELECT Nombre INTO v_nombre
+    FROM Clientes
+    WHERE CedulaID = p_cedulaID;
+
+    RETURN v_nombre;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END obtener_nombre_cliente;
