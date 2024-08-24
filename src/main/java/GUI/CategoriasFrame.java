@@ -4,7 +4,6 @@
  */
 package GUI;
 
-
 import BD.ConexionOracle;
 import java.sql.*;
 import javax.swing.*;
@@ -23,12 +22,10 @@ public class CategoriasFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form CategoriasFrame
-     * 
+     *
      */
-    
-    
     private DefaultTableModel modeloTabla;
-    
+
     public CategoriasFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
@@ -60,6 +57,7 @@ public class CategoriasFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        btnObtenerCategorias = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,45 +139,53 @@ public class CategoriasFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Descripcion");
 
+        btnObtenerCategorias.setText("ObtenerCategorias");
+        btnObtenerCategorias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerCategoriasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txfDescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txfCategoriaID1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 78, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnAgregar1)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar1)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar1)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEditar)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txfDescripcion1))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txfCategoriaID1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAgregar1)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar1)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar1)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnObtenerCategorias)))
+                        .addGap(0, 161, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,7 +211,8 @@ public class CategoriasFrame extends javax.swing.JFrame {
                     .addComponent(btnBuscar1)
                     .addComponent(btnEliminar1)
                     .addComponent(btnEditar)
-                    .addComponent(btnAgregar1))
+                    .addComponent(btnAgregar1)
+                    .addComponent(btnObtenerCategorias))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -244,6 +251,7 @@ public class CategoriasFrame extends javax.swing.JFrame {
             stmt.execute();
             JOptionPane.showMessageDialog(this, "Categoría agregada exitosamente.");
             actualizarTabla();
+            limpiarCampos();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al agregar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -276,6 +284,7 @@ public class CategoriasFrame extends javax.swing.JFrame {
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Categoría actualizada exitosamente.");
                 actualizarTabla();
+                limpiarCampos();
             } else {
                 JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -300,7 +309,12 @@ public class CategoriasFrame extends javax.swing.JFrame {
             stmt.execute();
             ResultSet rs = ((OracleCallableStatement) stmt).getCursor(2);
 
-            modeloTabla.setRowCount(0); // Limpiar la tabla antes de mostrar resultados
+            // Limpiar la tabla antes de mostrar resultados
+            modeloTabla.setRowCount(0);
+            // Limpiar los campos de texto
+            txfNombre1.setText("");
+            txfDescripcion1.setText("");
+
             if (rs.next()) {
                 txfNombre1.setText(rs.getString("Nombre"));
                 txfDescripcion1.setText(rs.getString("Descripcion"));
@@ -328,17 +342,18 @@ public class CategoriasFrame extends javax.swing.JFrame {
         try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call eliminar_categoria(?)}")) {
             int categoriaID = Integer.parseInt(categoriaIDText);
             stmt.setInt(1, categoriaID);
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Categoría eliminada exitosamente.");
-                txfNombre1.setText("");
-                txfDescripcion1.setText("");
-                actualizarTabla();
-            } else {
-                JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
-            }
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(this, "Categoría eliminada exitosamente.");
+            txfNombre1.setText("");
+            txfDescripcion1.setText("");
+            actualizarTabla();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al eliminar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            if (e.getErrorCode() == 2292) {
+                JOptionPane.showMessageDialog(this, "No se puede eliminar la categoría porque tiene registros asociados.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnEliminar1ActionPerformed
 
@@ -346,33 +361,114 @@ public class CategoriasFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txfCategoriaID1ActionPerformed
 
-    
+    private void btnObtenerCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerCategoriasActionPerformed
+        Connection conn = null;
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Obtener la conexión a la base de datos
+            conn = ConexionOracle.getConnection();
+            callableStatement = conn.prepareCall("{call ObtenerCategorias(?)}");
+            callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
+            callableStatement.execute();
+            resultSet = (ResultSet) callableStatement.getObject(1);
+
+            // Limpiar el modelo de la tabla antes de llenar con nuevos datos
+            modeloTabla.setRowCount(0);  // Limpia la tabla
+
+            // Procesar el ResultSet y llenar la tabla
+            while (resultSet.next()) {
+                int categoriaId = resultSet.getInt("CategoriaID");
+                String nombre = resultSet.getString("Nombre");
+                String descripcion = resultSet.getString("Descripcion");
+
+                // Añadir una fila a la tabla con los datos obtenidos
+                modeloTabla.addRow(new Object[]{categoriaId, nombre, descripcion});
+            }
+
+            // Informar al usuario que los datos se han obtenido exitosamente
+            JOptionPane.showMessageDialog(this, "Datos obtenidos exitosamente.");
+
+        } catch (SQLException e) {
+            // Manejo de errores
+            JOptionPane.showMessageDialog(this, "Error al obtener los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cerrar los recursos
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (callableStatement != null) {
+                    callableStatement.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Error al cerrar los recursos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnObtenerCategoriasActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    
-    
-    private void actualizarTabla() {
-        try (Connection conn = ConexionOracle.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM Categorias")) {
+    private void limpiarCampos() {
+        txfCategoriaID1.setText("");
+        txfNombre1.setText("");
+        txfDescripcion1.setText("");
+    }
 
-            modeloTabla.setRowCount(0); // Limpiar la tabla antes de mostrar resultados
-            while (rs.next()) {
+    private void actualizarTabla() {
+        CallableStatement callableStatement = null;
+        ResultSet resultSet = null;
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            callableStatement = conn.prepareCall("{call ObtenerCategorias(?)}");
+
+            callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
+
+            callableStatement.execute();
+
+            resultSet = (ResultSet) callableStatement.getObject(1);
+
+            modeloTabla.setRowCount(0);
+
+            while (resultSet.next()) {
                 modeloTabla.addRow(new Object[]{
-                    rs.getInt("CategoriaID"),
-                    rs.getString("Nombre"),
-                    rs.getString("Descripcion")
+                    resultSet.getInt("CategoriaID"),
+                    resultSet.getString("Nombre"),
+                    resultSet.getString("Descripcion")
                 });
             }
+
+            if (TablaCategorias.getModel() != modeloTabla) {
+                TablaCategorias.setModel(modeloTabla);
+            }
+
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al actualizar la tabla: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (callableStatement != null) {
+                    callableStatement.close();
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Error al cerrar los recursos: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
-    
-    
 
-    
-    
-    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -411,6 +507,7 @@ public class CategoriasFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar1;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar1;
+    private javax.swing.JButton btnObtenerCategorias;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -59,6 +59,7 @@ public class FacturaFrame extends javax.swing.JFrame {
         txfCantidad = new javax.swing.JTextField();
         txfPrecioUnitario = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        btnObtenerFactura = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,6 +116,13 @@ public class FacturaFrame extends javax.swing.JFrame {
 
         jLabel5.setText("PrecioUnitario");
 
+        btnObtenerFactura.setText("ObtenerFactura");
+        btnObtenerFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerFacturaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -152,7 +160,9 @@ public class FacturaFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnEditar)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnEliminar)))
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnObtenerFactura)))
                         .addGap(0, 73, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -172,14 +182,16 @@ public class FacturaFrame extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(txfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnAgregar)
                         .addComponent(btnBuscar)
                         .addComponent(btnEditar)
-                        .addComponent(btnEliminar)))
+                        .addComponent(btnEliminar)
+                        .addComponent(btnObtenerFactura))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -288,6 +300,18 @@ public class FacturaFrame extends javax.swing.JFrame {
             double precioUnitario = cstmt.getDouble(5);
             double precioTotal = cstmt.getDouble(6);
 
+            // Cerrar el CallableStatement y la conexión
+            cstmt.close();
+            conn.close();
+
+            // Crear un nuevo modelo de tabla
+            DefaultTableModel model = (DefaultTableModel) tableFactura.getModel();
+            // Limpiar los datos existentes en el modelo
+            model.setRowCount(0);
+
+            // Agregar la fila con los datos obtenidos
+            model.addRow(new Object[]{ventaID, productoID, cantidad, precioUnitario, precioTotal});
+
             // Establecer los resultados en los campos de texto
             txfVentaID.setText(String.valueOf(ventaID));
             txfProductoID.setText(String.valueOf(productoID));
@@ -298,9 +322,6 @@ public class FacturaFrame extends javax.swing.JFrame {
             double calculoPrecioTotal = cantidad * precioUnitario;
             JOptionPane.showMessageDialog(this, "Precio Total Calculado: " + calculoPrecioTotal, "Resultado", JOptionPane.INFORMATION_MESSAGE);
 
-            // Cerrar el CallableStatement y la conexión
-            cstmt.close();
-            conn.close();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al buscar la factura: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (NumberFormatException e) {
@@ -333,6 +354,46 @@ public class FacturaFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error en los datos ingresados. Verifique los valores.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnObtenerFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerFacturaActionPerformed
+        try {
+            // Crear conexión a la base de datos
+            Connection conn = ConexionOracle.getConnection();
+
+            // Preparar el procedimiento almacenado con un cursor de salida
+            CallableStatement cstmt = conn.prepareCall("{call ObtenerFactura(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento
+            cstmt.execute();
+
+            // Obtener el cursor
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            // Limpiar la tabla antes de llenarla con los nuevos datos
+            modeloTabla.setRowCount(0);
+
+            // Procesar el cursor y llenar la tabla
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("FacturaID"),
+                    rs.getInt("VentaID"),
+                    rs.getInt("ProductoID"),
+                    rs.getInt("Cantidad"),
+                    rs.getDouble("PrecioUnitario"),
+                    rs.getDouble("PrecioTotal")
+                };
+                modeloTabla.addRow(fila);
+            }
+
+            // Cerrar recursos
+            rs.close();
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener facturas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnObtenerFacturaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -412,6 +473,7 @@ public class FacturaFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerFactura;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -59,6 +59,7 @@ public class InventarioFrame extends javax.swing.JFrame {
         btnBuscar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnObtenerInventario = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,6 +116,13 @@ public class InventarioFrame extends javax.swing.JFrame {
             }
         });
 
+        btnObtenerInventario.setText("ObtenerInventario");
+        btnObtenerInventario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerInventarioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -122,17 +130,11 @@ public class InventarioFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnAgregar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnBuscar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEditar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEliminar))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
@@ -154,9 +156,18 @@ public class InventarioFrame extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(jLabel3)))
                                 .addGap(18, 18, 18)
-                                .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 71, Short.MAX_VALUE)))
-                .addContainerGap())
+                                .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnObtenerInventario)))
+                        .addGap(0, 75, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +182,7 @@ public class InventarioFrame extends javax.swing.JFrame {
                     .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(txfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,8 +193,9 @@ public class InventarioFrame extends javax.swing.JFrame {
                     .addComponent(btnAgregar)
                     .addComponent(btnBuscar)
                     .addComponent(btnEditar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(49, Short.MAX_VALUE))
+                    .addComponent(btnEliminar)
+                    .addComponent(btnObtenerInventario))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -240,7 +252,19 @@ public class InventarioFrame extends javax.swing.JFrame {
                 stmt.registerOutParameter(2, OracleTypes.CURSOR);
                 stmt.execute();
                 ResultSet rs = (ResultSet) stmt.getObject(2);
+
+                // Limpiar la tabla antes de mostrar el nuevo resultado
+                modeloTabla.setRowCount(0);
+
                 if (rs.next()) {
+                    Object[] fila = new Object[5];
+                    fila[0] = rs.getInt("InventarioID");
+                    fila[1] = rs.getInt("EmpleadoID");
+                    fila[2] = rs.getInt("ProductoID");
+                    fila[3] = rs.getInt("Cantidad");
+                    fila[4] = rs.getDate("FechaActualizada");
+                    modeloTabla.addRow(fila);
+                    // Llenar los campos de texto si es necesario
                     txfEmpleadoID.setText(rs.getString("EmpleadoID"));
                     txfProductoID.setText(rs.getString("ProductoID"));
                     txfCantidad.setText(rs.getString("Cantidad"));
@@ -249,11 +273,14 @@ public class InventarioFrame extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Registro no encontrado.");
                     limpiarCampos();
                 }
+
+                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al buscar el registro en el inventario.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
@@ -304,6 +331,42 @@ public class InventarioFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerInventarioActionPerformed
+        // Limpiar la tabla antes de actualizar
+        DefaultTableModel modeloTabla = (DefaultTableModel) tableInventario.getModel();
+        modeloTabla.setRowCount(0);
+
+        // Ejecutar el procedimiento almacenado
+        try (Connection conn = ConexionOracle.getConnection()) {
+            // Llamar al procedimiento almacenado
+            CallableStatement cstmt = conn.prepareCall("{call ObtenerInventario(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR); // Registrar el parámetro del cursor
+
+            // Ejecutar el procedimiento
+            cstmt.execute();
+
+            // Obtener el cursor
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            // Procesar el resultado
+            while (rs.next()) {
+                Object[] fila = new Object[5];
+                fila[0] = rs.getInt("InventarioID");
+                fila[1] = rs.getInt("EmpleadoID");
+                fila[2] = rs.getInt("ProductoID");
+                fila[3] = rs.getInt("Cantidad");
+                fila[4] = rs.getDate("FechaActualizada");
+                modeloTabla.addRow(fila);
+            }
+
+            rs.close();
+            cstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al obtener el inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnObtenerInventarioActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -316,14 +379,23 @@ public class InventarioFrame extends javax.swing.JFrame {
     }
 
     private void actualizarTabla() {
+        // Limpiar la tabla antes de actualizar
         DefaultTableModel modeloTabla = (DefaultTableModel) tableInventario.getModel();
-        modeloTabla.setRowCount(0); // Limpiar la tabla antes de actualizar
+        modeloTabla.setRowCount(0);
 
+        // Ejecutar el procedimiento almacenado para obtener el inventario
         try (Connection conn = ConexionOracle.getConnection()) {
-            String query = "SELECT * FROM Inventario";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            // Preparar y ejecutar el procedimiento almacenado
+            CallableStatement cstmt = conn.prepareCall("{call ObtenerInventario(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR); // Registrar el parámetro del cursor
 
+            // Ejecutar el procedimiento
+            cstmt.execute();
+
+            // Obtener el cursor
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            // Procesar el resultado
             while (rs.next()) {
                 Object[] fila = new Object[5];
                 fila[0] = rs.getInt("InventarioID");
@@ -335,7 +407,7 @@ public class InventarioFrame extends javax.swing.JFrame {
             }
 
             rs.close();
-            stmt.close();
+            cstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al actualizar la tabla de inventario.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -379,6 +451,7 @@ public class InventarioFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerInventario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

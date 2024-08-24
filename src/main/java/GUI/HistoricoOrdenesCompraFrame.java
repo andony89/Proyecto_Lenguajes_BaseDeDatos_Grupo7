@@ -4,8 +4,6 @@
  */
 package GUI;
 
-import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author andon
@@ -62,6 +60,7 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
         btnBuscar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnObtenerHistoricoOrdenesCompra = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -118,6 +117,13 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
             }
         });
 
+        btnObtenerHistoricoOrdenesCompra.setText("ObtenerHistorico");
+        btnObtenerHistoricoOrdenesCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerHistoricoOrdenesCompraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -149,7 +155,9 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(18, 18, 18)
-                                .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addComponent(btnObtenerHistoricoOrdenesCompra))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(64, 64, 64)
                                 .addComponent(btnAgregar)
@@ -182,14 +190,16 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5)
-                    .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnObtenerHistoricoOrdenesCompra)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(btnBuscar)
                     .addComponent(btnEditar)
                     .addComponent(btnEliminar))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -235,18 +245,26 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
         try (Connection conn = ConexionOracle.getConnection()) {
             String sql = "{CALL LeerHistoricoOrdenCompra(?, ?, ?, ?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
+                // Establecer el parámetro IN
                 stmt.setInt(1, Integer.parseInt(txfHistoricoID.getText()));
+
+                // Registrar los parámetros OUT
                 stmt.registerOutParameter(2, Types.INTEGER);
                 stmt.registerOutParameter(3, Types.INTEGER);
                 stmt.registerOutParameter(4, Types.INTEGER);
                 stmt.registerOutParameter(5, Types.VARCHAR);
+
+                // Ejecutar el procedimiento
                 stmt.execute();
 
-                // Establecer los valores en los campos de texto
-                txfOrdenCompraID.setText(String.valueOf(stmt.getInt(2)));
-                txfProductoID.setText(String.valueOf(stmt.getInt(3)));
-                txfCantidad.setText(String.valueOf(stmt.getInt(4)));
-                txfEstado.setText(stmt.getString(5));
+                // Obtener los valores de los parámetros OUT
+                int ordenCompraID = stmt.getInt(2);
+                int productoID = stmt.getInt(3);
+                int cantidad = stmt.getInt(4);
+                String estado = stmt.getString(5);
+
+                // Actualizar la tabla con el resultado del procedimiento
+                actualizarTablaConResultado(Integer.parseInt(txfHistoricoID.getText()), ordenCompraID, productoID, cantidad, estado);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,9 +308,61 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerHistoricoOrdenesCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerHistoricoOrdenesCompraActionPerformed
+        Connection conn = null;
+        CallableStatement cstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Obtiene la conexión de la clase ConexionOracle
+            conn = ConexionOracle.getConnection(); // Ajusta este método según tu implementación
+
+            // Llama al procedimiento almacenado
+            cstmt = conn.prepareCall("{call ObtenerHistoricoOrdenesCompra(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecuta el procedimiento
+            cstmt.execute();
+
+            // Obtiene el cursor
+            rs = (ResultSet) cstmt.getObject(1);
+
+            // Actualiza la tabla con los datos del cursor
+            actualizarTabla();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener datos: " + e.getMessage());
+        } finally {
+            // Cierra los recursos
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (cstmt != null) {
+                    cstmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            // No es necesario cerrar la conexión aquí si la estás manejando de otra manera
+        }
+    }//GEN-LAST:event_btnObtenerHistoricoOrdenesCompraActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void actualizarTablaConResultado(int historicoID, int ordenCompraID, int productoID, int cantidad, String estado) {
+        DefaultTableModel model = (DefaultTableModel) tableHistoricoOrdenesCompra.getModel();
+        model.setRowCount(0); // Limpiar la tabla antes de agregar nuevos datos
+
+        // Agregar solo el registro encontrado
+        model.addRow(new Object[]{historicoID, ordenCompraID, productoID, cantidad, estado});
+    }
+
     private void limpiarCampos() {
         // Limpiar los campos de texto
         txfHistoricoID.setText("");
@@ -363,6 +433,7 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerHistoricoOrdenesCompra;
     private javax.swing.Box.Filler filler1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -13,6 +13,11 @@ import oracle.jdbc.OracleCallableStatement;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.RowSorter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -64,6 +69,11 @@ public class EmpleadosFrame extends javax.swing.JFrame {
         FContratacion = new javax.swing.JLabel();
         Salario = new javax.swing.JLabel();
         txfFechaC = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        btnObtenerEmpleados = new javax.swing.JButton();
+        btnObtenerEmpleadosPorPosicion = new javax.swing.JButton();
+        btnObtenerEmpleadosPorSalario = new javax.swing.JButton();
 
         jTextField6.setText("jTextField6");
 
@@ -177,24 +187,97 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(255, 153, 102));
+
+        jLabel1.setText("Cursor");
+
+        btnObtenerEmpleados.setText("ObtenerEmpleados");
+        btnObtenerEmpleados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerEmpleadosActionPerformed(evt);
+            }
+        });
+
+        btnObtenerEmpleadosPorPosicion.setText("ObtenerEmpleadosPorPosicion");
+        btnObtenerEmpleadosPorPosicion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerEmpleadosPorPosicionActionPerformed(evt);
+            }
+        });
+
+        btnObtenerEmpleadosPorSalario.setText("ObtenerEmpleadosPorSalario");
+        btnObtenerEmpleadosPorSalario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerEmpleadosPorSalarioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addComponent(btnObtenerEmpleados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnObtenerEmpleadosPorPosicion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnObtenerEmpleadosPorSalario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnObtenerEmpleados)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnObtenerEmpleadosPorPosicion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnObtenerEmpleadosPorSalario)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(FContratacion)
-                        .addGap(18, 18, 18)
-                        .addComponent(txfFechaC, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(EmpleadoID)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnBuscar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAgregar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEditar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1057, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(Telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(FContratacion)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfFechaC, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(Salario)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -202,64 +285,36 @@ public class EmpleadosFrame extends javax.swing.JFrame {
                         .addGap(34, 34, 34)
                         .addComponent(Posicion)
                         .addGap(26, 26, 26)
-                        .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnBuscar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnAgregar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEditar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEliminar)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(589, 589, 589))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(EmpleadoID)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(533, 533, 533))))
+                        .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Nombre)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(EmpleadoID)
-                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Email)
-                    .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Telefono)
-                    .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Salario)
-                    .addComponent(txfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Posicion)
-                    .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(9, 9, 9)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Nombre)
+                            .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(EmpleadoID)
+                            .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Email)
+                            .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Telefono)
+                            .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Salario)
+                            .addComponent(txfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Posicion)
+                            .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(FContratacion)
                     .addComponent(txfFechaC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -269,7 +324,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
                     .addComponent(btnAgregar)
                     .addComponent(btnEditar)
                     .addComponent(btnEliminar))
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -278,15 +333,15 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -305,7 +360,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             String sql = "{call leer_empleado(?, ?)}";
             CallableStatement cstmt = conn.prepareCall(sql);
             cstmt.setInt(1, Integer.parseInt(empleadoIDStr));
-            cstmt.registerOutParameter(2, OracleTypes.CURSOR); 
+            cstmt.registerOutParameter(2, OracleTypes.CURSOR);
 
             cstmt.execute(); // Ejecución del procedimiento
 
@@ -329,6 +384,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al buscar empleado: " + e.getMessage());
         }
+        limpiarCampos();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -360,6 +416,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Empleado agregado exitosamente.");
 
             // Actualizar la tabla o interfaz de usuario
+            limpiarCampos();
             actualizarTabla();
         } catch (SQLException e) {
             // Manejo de errores
@@ -390,10 +447,12 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             // Ejecutar la actualización
             cstmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Empleado actualizado exitosamente.");
+            limpiarCampos();
             actualizarTabla();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al actualizar empleado: " + e.getMessage());
         }
+
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
@@ -407,6 +466,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             // Ejecutar la eliminación
             cstmt.executeUpdate();
             JOptionPane.showMessageDialog(this, "Empleado eliminado exitosamente.");
+            limpiarCampos();
             actualizarTabla();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al eliminar empleado: " + e.getMessage());
@@ -441,17 +501,202 @@ public class EmpleadosFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txfNombreActionPerformed
 
+    private void btnObtenerEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerEmpleadosActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call ObtenerEmpleados(?)}";
+            CallableStatement cstmt = conn.prepareCall(sql);
+
+            // Registramos el parámetro de salida como un REF CURSOR
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecutamos el procedimiento
+            cstmt.execute();
+
+            // Obtenemos el REF CURSOR y lo convertimos en un ResultSet
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            // Limpiamos la tabla antes de cargar los datos
+            DefaultTableModel model = (DefaultTableModel) TableEmpleados.getModel();
+            model.setRowCount(0);
+
+            // Iteramos sobre el ResultSet para poblar la tabla
+            while (rs.next()) {
+                Object[] fila = {
+                    rs.getInt("EmpleadoID"),
+                    rs.getString("Nombre"),
+                    rs.getString("Telefono"),
+                    rs.getString("Email"),
+                    rs.getString("Posicion"),
+                    rs.getDate("FechaContratacion"),
+                    rs.getDouble("Salario")
+                };
+                model.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener empleados: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnObtenerEmpleadosActionPerformed
+
+    private void btnObtenerEmpleadosPorPosicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerEmpleadosPorPosicionActionPerformed
+        String posicion = JOptionPane.showInputDialog(this, "Ingrese la posición de los empleados:");
+
+        if (posicion != null && !posicion.isEmpty()) {
+            Connection con = null;
+            CallableStatement stmt = null;
+            ResultSet rs = null;
+
+            try {
+                con = ConexionOracle.getConnection();
+                String sql = "{call ObtenerEmpleadosPorPosicion(?, ?)}";
+                stmt = con.prepareCall(sql);
+                stmt.setString(1, posicion);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+                stmt.execute();
+
+                rs = (ResultSet) stmt.getObject(2);
+
+                // Obtener datos del ResultSet y llenar la JTable
+                DefaultTableModel model = (DefaultTableModel) TableEmpleados.getModel();
+                model.setRowCount(0);  // Limpiar tabla antes de agregar nuevos datos
+
+                while (rs.next()) {
+                    int empleadoID = rs.getInt("EmpleadoID");
+                    String nombre = rs.getString("Nombre");
+                    String telefono = rs.getString("Telefono");
+                    String email = rs.getString("Email");
+                    String posicionEmpleado = rs.getString("Posicion");
+                    Date fechaContratacion = rs.getDate("FechaContratacion");
+                    double salario = rs.getDouble("Salario");
+
+                    model.addRow(new Object[]{empleadoID, nombre, telefono, email, posicionEmpleado, fechaContratacion, salario});
+                }
+
+                // Ordenar la tabla por la columna Posicion alfabéticamente
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+                TableEmpleados.setRowSorter(sorter);
+                List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();  // Especifica explícitamente el tipo
+                sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));  // Columna 4 es 'Posicion'
+                sorter.setSortKeys(sortKeys);
+                sorter.sort();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al obtener empleados: " + e.getMessage());
+            } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                    if (con != null) {
+                        con.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_btnObtenerEmpleadosPorPosicionActionPerformed
+
+    private void btnObtenerEmpleadosPorSalarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerEmpleadosPorSalarioActionPerformed
+        String salarioMinimoStr = JOptionPane.showInputDialog(this, "Ingrese el salario mínimo:");
+
+        if (salarioMinimoStr != null && !salarioMinimoStr.isEmpty()) {
+            double salarioMinimo = Double.parseDouble(salarioMinimoStr);
+
+            Connection con = null;
+            CallableStatement stmt = null;
+            ResultSet rs = null;
+
+            try {
+                con = ConexionOracle.getConnection();
+                String sql = "{call ObtenerEmpleadosPorSalario(?, ?)}";
+                stmt = con.prepareCall(sql);
+                stmt.setDouble(1, salarioMinimo);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+                stmt.execute();
+
+                rs = (ResultSet) stmt.getObject(2);
+
+                // Obtener datos del ResultSet y llenar la JTable
+                DefaultTableModel model = (DefaultTableModel) TableEmpleados.getModel();
+                model.setRowCount(0);  // Limpiar tabla antes de agregar nuevos datos
+
+                while (rs.next()) {
+                    int empleadoID = rs.getInt("EmpleadoID");
+                    String nombre = rs.getString("Nombre");
+                    String telefono = rs.getString("Telefono");
+                    String email = rs.getString("Email");
+                    String posicion = rs.getString("Posicion");
+                    Date fechaContratacion = rs.getDate("FechaContratacion");
+                    double salario = rs.getDouble("Salario");
+
+                    model.addRow(new Object[]{empleadoID, nombre, telefono, email, posicion, fechaContratacion, salario});
+                }
+
+                // Ordenar la tabla por la columna Salario de mayor a menor
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+                TableEmpleados.setRowSorter(sorter);
+                List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+                sortKeys.add(new RowSorter.SortKey(6, SortOrder.DESCENDING));  // Columna 6 es 'Salario'
+                sorter.setSortKeys(sortKeys);
+                sorter.sort();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al obtener empleados: " + e.getMessage());
+            } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                    if (con != null) {
+                        con.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_btnObtenerEmpleadosPorSalarioActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    public void limpiarCampos() {
+        txfNombre.setText("");
+        txfEmpleadoID.setText("");
+        txfTelefono.setText("");
+        txfEmail.setText("");
+        txfPosicion.setText("");
+        txfSalario.setText("");
+        txfFechaC.setText("");
+    }
+
     private void actualizarTabla() {
         modeloTabla.setRowCount(0); // Limpiar la tabla
 
         try (Connection conn = ConexionOracle.getConnection()) {
-            String sql = "SELECT * FROM EMPLEADOS";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            String sql = "{call ObtenerEmpleados(?)}";
+            CallableStatement cstmt = conn.prepareCall(sql);
 
+            // Registrar el parámetro de salida como un REF CURSOR
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento
+            cstmt.execute();
+
+            // Obtener el REF CURSOR y convertirlo en un ResultSet
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            // Iterar sobre el ResultSet para poblar la tabla
             while (rs.next()) {
                 int empleadoID = rs.getInt("EmpleadoID");
                 String nombre = rs.getString("Nombre");
@@ -513,7 +758,12 @@ public class EmpleadosFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerEmpleados;
+    private javax.swing.JButton btnObtenerEmpleadosPorPosicion;
+    private javax.swing.JButton btnObtenerEmpleadosPorSalario;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField txfEmail;

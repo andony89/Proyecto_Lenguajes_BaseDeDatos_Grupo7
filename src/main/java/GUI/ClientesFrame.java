@@ -59,6 +59,7 @@ public class ClientesFrame extends javax.swing.JFrame {
         btnBuscar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnObtenerClientes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,13 +116,20 @@ public class ClientesFrame extends javax.swing.JFrame {
             }
         });
 
+        btnObtenerClientes.setText("ObtenerClientes");
+        btnObtenerClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerClientesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,8 +161,10 @@ public class ClientesFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnEditar)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnEliminar)))
-                        .addGap(0, 322, Short.MAX_VALUE)))
+                                .addComponent(btnEliminar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnObtenerClientes)))
+                        .addGap(0, 192, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -181,8 +191,9 @@ public class ClientesFrame extends javax.swing.JFrame {
                     .addComponent(btnAgregar)
                     .addComponent(btnBuscar)
                     .addComponent(btnEditar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(27, Short.MAX_VALUE))
+                    .addComponent(btnEliminar)
+                    .addComponent(btnObtenerClientes))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -248,9 +259,11 @@ public class ClientesFrame extends javax.swing.JFrame {
             return;
         }
 
+        Connection conn = null;
+        CallableStatement cstmt = null;
         try {
-            Connection conn = ConexionOracle.getConnection();
-            CallableStatement cstmt = conn.prepareCall("{call LeerCliente(?, ?, ?, ?, ?)}");
+            conn = ConexionOracle.getConnection();
+            cstmt = conn.prepareCall("{call LeerCliente(?, ?, ?, ?, ?)}");
             cstmt.setInt(1, cedulaID);
             cstmt.registerOutParameter(2, Types.VARCHAR);
             cstmt.registerOutParameter(3, Types.NUMERIC);
@@ -263,16 +276,48 @@ public class ClientesFrame extends javax.swing.JFrame {
             String direccion = cstmt.getString(4);
             String email = cstmt.getString(5);
 
+            // Limpiar la tabla antes de llenarla
+            DefaultTableModel model = (DefaultTableModel) tableClientes.getModel();
+            model.setRowCount(0);
+
+            // Añadir el cliente encontrado a la tabla
+            if (nombre != null) {
+                Object[] row = {
+                    cedulaID,
+                    nombre,
+                    telefono,
+                    direccion,
+                    email
+                };
+                model.addRow(row);
+            } else {
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Mostrar los datos en los campos de texto
             txfNombre.setText(nombre);
             txfTelefono.setText(String.valueOf(telefono));
             txfDireccion.setText(direccion);
             txfEmail.setText(email);
-
-            cstmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al buscar el cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cierre de recursos en el bloque finally para asegurar su liberación.
+            if (cstmt != null) {
+                try {
+                    cstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -347,6 +392,59 @@ public class ClientesFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerClientesActionPerformed
+        Connection conn = null;
+        CallableStatement cstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = ConexionOracle.getConnection();
+            cstmt = conn.prepareCall("{call ObtenerClientes(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+            cstmt.execute();
+
+            rs = (ResultSet) cstmt.getObject(1);
+            DefaultTableModel model = (DefaultTableModel) tableClientes.getModel();
+            model.setRowCount(0); // Limpiar la tabla antes de llenarla
+
+            while (rs.next()) {
+                Object[] row = {
+                    rs.getInt("CedulaID"),
+                    rs.getString("Nombre"),
+                    rs.getInt("Telefono"),
+                    rs.getString("Direccion"),
+                    rs.getString("Email")
+                };
+                model.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al obtener los clientes.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cierre de recursos en el bloque finally para asegurar su liberación.
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (cstmt != null) {
+                try {
+                    cstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }//GEN-LAST:event_btnObtenerClientesActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -359,13 +457,19 @@ public class ClientesFrame extends javax.swing.JFrame {
     }
 
     private void actualizarTabla() {
-        modeloTabla.setRowCount(0);
+        modeloTabla.setRowCount(0); // Limpiar la tabla antes de actualizar
+
+        Connection conn = null;
+        CallableStatement cstmt = null;
+        ResultSet rs = null;
 
         try {
-            Connection conn = ConexionOracle.getConnection();
-            String query = "SELECT CedulaID, Nombre, Telefono, Direccion, Email FROM Clientes";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            conn = ConexionOracle.getConnection();
+            cstmt = conn.prepareCall("{call ObtenerClientes(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR); // Registro del parámetro de salida para el cursor
+            cstmt.execute();
+
+            rs = (ResultSet) cstmt.getObject(1); // Obtener el ResultSet del cursor
 
             while (rs.next()) {
                 Object[] fila = new Object[5];
@@ -377,12 +481,32 @@ public class ClientesFrame extends javax.swing.JFrame {
                 modeloTabla.addRow(fila);
             }
 
-            rs.close();
-            stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al actualizar la tabla de clientes.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cierre de recursos en el bloque finally para asegurar su liberación.
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (cstmt != null) {
+                try {
+                    cstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -428,6 +552,7 @@ public class ClientesFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerClientes;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableClientes;

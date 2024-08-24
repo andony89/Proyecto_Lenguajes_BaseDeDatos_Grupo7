@@ -4,8 +4,6 @@
  */
 package GUI;
 
-
-
 import BD.ConexionOracle;
 import java.sql.*;
 import javax.swing.*;
@@ -16,7 +14,6 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 /**
  *
  * @author andon
@@ -26,9 +23,8 @@ public class ProveedoresFrame extends javax.swing.JFrame {
     /**
      * Creates new form ProveedoresFrame
      */
-    
     private DefaultTableModel modeloTabla;
-        
+
     public ProveedoresFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
@@ -63,6 +59,7 @@ public class ProveedoresFrame extends javax.swing.JFrame {
         Telefono = new javax.swing.JLabel();
         Direccion = new javax.swing.JLabel();
         Email = new javax.swing.JLabel();
+        btnObtenerProveedor = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,89 +116,102 @@ public class ProveedoresFrame extends javax.swing.JFrame {
 
         Email.setText("Email");
 
+        btnObtenerProveedor.setText("ObtenerProveedores");
+        btnObtenerProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerProveedorActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ProveedorID)
-                            .addComponent(Direccion))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnAgregar)
                                 .addGap(18, 18, 18)
-                                .addComponent(Nombre)
+                                .addComponent(btnBuscar)
                                 .addGap(18, 18, 18)
-                                .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnEditar)
                                 .addGap(18, 18, 18)
-                                .addComponent(Telefono)
+                                .addComponent(btnEliminar)
                                 .addGap(18, 18, 18)
-                                .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnObtenerProveedor))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txfDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(Email)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfEmail)))
-                        .addGap(26, 26, 26)
-                        .addComponent(btnAgregar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEditar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar)
-                        .addGap(0, 59, Short.MAX_VALUE)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ProveedorID)
+                                    .addComponent(Direccion))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Nombre)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Telefono)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txfDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Email)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfEmail)))))
+                        .addGap(0, 197, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(ProveedorID)
-                            .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Nombre)
-                            .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Telefono)
-                            .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(23, 23, 23))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAgregar)
-                            .addComponent(btnBuscar)
-                            .addComponent(btnEditar)
-                            .addComponent(btnEliminar))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ProveedorID)
+                    .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Nombre)
+                    .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Telefono)
+                    .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Direccion)
                     .addComponent(txfDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Email)
                     .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar)
+                    .addComponent(btnObtenerProveedor))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -241,22 +251,29 @@ public class ProveedoresFrame extends javax.swing.JFrame {
             return;
         }
 
+        // Limpia la tabla antes de mostrar los datos del proveedor buscado
+        modeloTabla.setRowCount(0);
+
         try {
             Connection conn = ConexionOracle.getConnection();
             CallableStatement cstmt = conn.prepareCall("{call leer_proveedor(?, ?)}");
             cstmt.setInt(1, proveedorID);
             cstmt.registerOutParameter(2, OracleTypes.CURSOR);
             cstmt.execute();
+
+            // Obtener el cursor del procedimiento
             ResultSet rs = (ResultSet) cstmt.getObject(2);
 
             if (rs.next()) {
-                txfNombre.setText(rs.getString("Nombre"));
-                txfTelefono.setText(rs.getString("Telefono"));
-                txfEmail.setText(rs.getString("Email"));
-                txfDireccion.setText(rs.getString("Direccion"));
+                int id = rs.getInt("ProveedorID");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String direccion = rs.getString("Direccion");
+                String email = rs.getString("Email");
+
+                modeloTabla.addRow(new Object[]{id, nombre, telefono, direccion, email});
             } else {
                 JOptionPane.showMessageDialog(this, "Proveedor no encontrado.", "Info", JOptionPane.INFORMATION_MESSAGE);
-                limpiarCampos();
             }
 
             rs.close();
@@ -330,6 +347,37 @@ public class ProveedoresFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerProveedorActionPerformed
+        modeloTabla.setRowCount(0); // Limpiar la tabla antes de obtener los datos
+
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cstmt = conn.prepareCall("{call ObtenerProveedores(?)}");
+            cstmt.registerOutParameter(1, OracleTypes.CURSOR);
+            cstmt.execute();
+
+            // Obtener el cursor del procedimiento
+            ResultSet rs = (ResultSet) cstmt.getObject(1);
+
+            while (rs.next()) {
+                int proveedorID = rs.getInt("ProveedorID");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String direccion = rs.getString("Direccion");
+                String email = rs.getString("Email");
+
+                modeloTabla.addRow(new Object[]{proveedorID, nombre, telefono, direccion, email});
+            }
+
+            rs.close();
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al obtener los proveedores.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnObtenerProveedorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -341,31 +389,28 @@ public class ProveedoresFrame extends javax.swing.JFrame {
         txfDireccion.setText("");
     }
 
-    
     private void actualizarTabla() {
-    modeloTabla.setRowCount(0); // Limpiar la tabla
+        modeloTabla.setRowCount(0);
 
-    try (Connection conn = ConexionOracle.getConnection()) {
-        String sql = "SELECT * FROM PROVEEDORES";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "SELECT * FROM PROVEEDORES";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
-        while (rs.next()) {
-            int proveedorID = rs.getInt("ProveedorID");
-            String nombre = rs.getString("Nombre");
-            String telefono = rs.getString("Telefono");
-            String direccion = rs.getString("Direccion");
-            String email = rs.getString("Email");
+            while (rs.next()) {
+                int proveedorID = rs.getInt("ProveedorID");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String direccion = rs.getString("Direccion");
+                String email = rs.getString("Email");
 
-            modeloTabla.addRow(new Object[]{proveedorID, nombre, telefono, direccion, email});
+                modeloTabla.addRow(new Object[]{proveedorID, nombre, telefono, direccion, email});
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
     }
-}
-    
-    
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -409,6 +454,7 @@ public class ProveedoresFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerProveedor;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField txfDireccion;

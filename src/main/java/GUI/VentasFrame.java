@@ -57,6 +57,7 @@ public class VentasFrame extends javax.swing.JFrame {
         txfFecha = new javax.swing.JTextField();
         txfCedulaID = new javax.swing.JTextField();
         txfTotal = new javax.swing.JTextField();
+        btnObtenerVentas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,44 +112,51 @@ public class VentasFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Total");
 
+        btnObtenerVentas.setText("ObtenerVentas");
+        btnObtenerVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerVentasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txfVentaID, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(txfCedulaID, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(txfVentaID, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(txfCedulaID, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnObtenerVentas)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAgregar)
-                .addGap(18, 18, 18)
-                .addComponent(btnBuscar)
-                .addGap(18, 18, 18)
-                .addComponent(btnEditar)
-                .addGap(18, 18, 18)
-                .addComponent(btnEliminar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,7 +178,8 @@ public class VentasFrame extends javax.swing.JFrame {
                     .addComponent(btnAgregar)
                     .addComponent(btnBuscar)
                     .addComponent(btnEditar)
-                    .addComponent(btnEliminar))
+                    .addComponent(btnEliminar)
+                    .addComponent(btnObtenerVentas))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
 
@@ -222,8 +231,10 @@ public class VentasFrame extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
+            // Obtener el ID de la venta desde el campo de texto
             int ventaID = Integer.parseInt(txfVentaID.getText());
 
+            // Llamar al procedimiento almacenado para buscar la venta
             Connection conn = ConexionOracle.getConnection();
             CallableStatement cs = conn.prepareCall("{call LeerVenta(?, ?, ?, ?)}");
             cs.setInt(1, ventaID);
@@ -232,15 +243,24 @@ public class VentasFrame extends javax.swing.JFrame {
             cs.registerOutParameter(4, java.sql.Types.DOUBLE);
             cs.execute();
 
-            txfFecha.setText(cs.getDate(2).toString());
-            txfCedulaID.setText(String.valueOf(cs.getInt(3)));
-            txfTotal.setText(String.valueOf(cs.getDouble(4)));
+            // Limpiar la tabla y agregar el resultado de la búsqueda
+            limpiarTabla();
+            DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
+            model.addRow(new Object[]{
+                ventaID,
+                cs.getDate(2),
+                cs.getInt(3),
+                cs.getDouble(4)
+            });
 
             cs.close();
             conn.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error al buscar la venta: " + ex.getMessage());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "ID de venta inválido: " + ex.getMessage());
         }
+
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
@@ -289,9 +309,74 @@ public class VentasFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerVentasActionPerformed
+        Connection conn = null;
+        CallableStatement cs = null;
+        ResultSet rs = null;
+
+        try {
+            // Establecer la conexión con la base de datos
+            conn = ConexionOracle.getConnection();
+
+            // Preparar la llamada al procedimiento almacenado
+            cs = conn.prepareCall("{call ObtenerVentas(?)}");
+
+            // Registrar el parámetro de salida
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Ejecutar el procedimiento
+            cs.execute();
+
+            // Obtener el cursor
+            rs = (ResultSet) cs.getObject(1);
+
+            // Limpiar la tabla
+            limpiarTabla();
+
+            // Llenar la tabla con los resultados
+            DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                    rs.getInt("VentaID"),
+                    rs.getDate("Fecha"),
+                    rs.getInt("CedulaID"),
+                    rs.getDouble("Total")
+                });
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al obtener las ventas: " + ex.getMessage());
+        } finally {
+            // Cerrar recursos
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                /* Ignorar */ }
+            try {
+                if (cs != null) {
+                    cs.close();
+                }
+            } catch (SQLException e) {
+                /* Ignorar */ }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                /* Ignorar */ }
+        }
+    }//GEN-LAST:event_btnObtenerVentasActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void limpiarTabla() {
+        DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
+        model.setRowCount(0);
+    }
+
     private void limpiarCampos() {
         txfVentaID.setText("");
         txfFecha.setText("");
@@ -364,6 +449,7 @@ public class VentasFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerVentas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

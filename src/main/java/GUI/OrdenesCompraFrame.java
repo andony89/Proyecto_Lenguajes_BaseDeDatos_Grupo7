@@ -59,6 +59,7 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
         txfProveedorID = new javax.swing.JTextField();
         txfTotal = new javax.swing.JTextField();
         txfEstado = new javax.swing.JTextField();
+        btnObtenerOrdenesCompra = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,6 +116,13 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
             }
         });
 
+        btnObtenerOrdenesCompra.setText("ObtenerOrdenesCompra");
+        btnObtenerOrdenesCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObtenerOrdenesCompraActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -122,30 +130,7 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfOrdenCompraID, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 848, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
-                                .addGap(18, 18, 18)
-                                .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(7, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 643, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnAgregar)
                         .addGap(18, 18, 18)
@@ -154,7 +139,29 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
                         .addComponent(btnEditar)
                         .addGap(18, 18, 18)
                         .addComponent(btnEliminar)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnObtenerOrdenesCompra))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfOrdenCompraID, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfProveedorID, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,13 +182,15 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
                     .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregar)
-                    .addComponent(btnBuscar)
-                    .addComponent(btnEditar)
-                    .addComponent(btnEliminar))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAgregar)
+                        .addComponent(btnBuscar)
+                        .addComponent(btnEditar)
+                        .addComponent(btnEliminar))
+                    .addComponent(btnObtenerOrdenesCompra))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -190,8 +199,8 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,11 +259,24 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
             cs.registerOutParameter(5, java.sql.Types.VARCHAR);
             cs.execute();
 
-            // Mostrar los valores obtenidos en los campos de texto
-            txfFecha.setText(cs.getDate(2).toString());
-            txfProveedorID.setText(String.valueOf(cs.getInt(3)));
-            txfTotal.setText(String.valueOf(cs.getDouble(4)));
-            txfEstado.setText(cs.getString(5));
+            // Obtener los valores devueltos
+            Date fecha = cs.getDate(2);
+            int proveedorID = cs.getInt(3);
+            double total = cs.getDouble(4);
+            String estado = cs.getString(5);
+
+            // Limpiar la JTable
+            DefaultTableModel model = (DefaultTableModel) tableOrdenesCompra.getModel();
+            model.setRowCount(0);
+
+            // Verificar si se encontró la orden de compra
+            if (fecha != null) {
+                // Añadir la fila con los datos obtenidos
+                model.addRow(new Object[]{ordenCompraID, fecha, proveedorID, total, estado});
+            } else {
+                // Informar al usuario que no se encontró la orden de compra
+                JOptionPane.showMessageDialog(this, "No se encontró la orden de compra con el ID especificado.");
+            }
 
             // Cerrar recursos
             cs.close();
@@ -322,6 +344,45 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnObtenerOrdenesCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObtenerOrdenesCompraActionPerformed
+        try {
+            // Conectar a la base de datos
+            Connection conn = ConexionOracle.getConnection();
+
+            // Llamar al procedimiento almacenado que devuelve un cursor
+            CallableStatement cs = conn.prepareCall("{call ObtenerOrdenesCompra(?)}");
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+
+            // Obtener el cursor de resultados
+            ResultSet rs = (ResultSet) cs.getObject(1);
+
+            // Obtener el modelo de la tabla para actualizar los datos
+            DefaultTableModel model = (DefaultTableModel) tableOrdenesCompra.getModel();
+
+            // Limpiar la tabla actual
+            model.setRowCount(0);
+
+            // Rellenar la tabla con los datos del cursor
+            while (rs.next()) {
+                int ordenCompraID = rs.getInt("OrdenCompraID");
+                Date fecha = rs.getDate("Fecha");
+                int proveedorID = rs.getInt("ProveedorID");
+                double total = rs.getDouble("Total");
+                String estado = rs.getString("Estado");
+
+                model.addRow(new Object[]{ordenCompraID, fecha, proveedorID, total, estado});
+            }
+
+            // Cerrar recursos
+            rs.close();
+            cs.close();
+            conn.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al obtener las órdenes de compra: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnObtenerOrdenesCompraActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -337,11 +398,14 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
         try {
             // Conectar a la base de datos
             Connection conn = ConexionOracle.getConnection();
-            Statement stmt = conn.createStatement();
 
-            // Consulta para obtener todas las órdenes de compra
-            String query = "SELECT * FROM OrdenesCompra";
-            ResultSet rs = stmt.executeQuery(query);
+            // Llamar al procedimiento almacenado que devuelve un cursor
+            CallableStatement cs = conn.prepareCall("{call ObtenerOrdenesCompra(?)}");
+            cs.registerOutParameter(1, OracleTypes.CURSOR);
+            cs.execute();
+
+            // Obtener el cursor de resultados
+            ResultSet rs = (ResultSet) cs.getObject(1);
 
             // Obtener el modelo de la tabla para actualizar los datos
             DefaultTableModel model = (DefaultTableModel) tableOrdenesCompra.getModel();
@@ -349,7 +413,7 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
             // Limpiar la tabla actual
             model.setRowCount(0);
 
-            // Rellenar la tabla con los datos de la base de datos
+            // Rellenar la tabla con los datos del cursor
             while (rs.next()) {
                 int ordenCompraID = rs.getInt("OrdenCompraID");
                 Date fecha = rs.getDate("Fecha");
@@ -362,7 +426,7 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
 
             // Cerrar recursos
             rs.close();
-            stmt.close();
+            cs.close();
             conn.close();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Error al actualizar la tabla: " + ex.getMessage());
@@ -406,6 +470,7 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnObtenerOrdenesCompra;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
