@@ -8,15 +8,29 @@ package GUI;
  *
  * @author andon
  */
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class VentasFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form VentasFrame
      */
+    private DefaultTableModel modeloTabla;
+
     public VentasFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) tableVentas.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -29,20 +43,135 @@ public class VentasFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableVentas = new javax.swing.JTable();
+        btnAgregar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txfVentaID = new javax.swing.JTextField();
+        txfFecha = new javax.swing.JTextField();
+        txfCedulaID = new javax.swing.JTextField();
+        txfTotal = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(51, 0, 51));
+        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
+
+        tableVentas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "VentaID", "Fecha", "CedulaID", "Total"
+            }
+        ));
+        jScrollPane1.setViewportView(tableVentas);
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("VentaID");
+
+        jLabel2.setText("Fecha");
+
+        jLabel3.setText("CedulaID");
+
+        jLabel4.setText("Total");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfVentaID, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfCedulaID, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnAgregar)
+                .addGap(18, 18, 18)
+                .addComponent(btnBuscar)
+                .addGap(18, 18, 18)
+                .addComponent(btnEditar)
+                .addGap(18, 18, 18)
+                .addComponent(btnEliminar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txfVentaID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txfFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(txfCedulaID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txfTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,24 +179,154 @@ public class VentasFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(133, 133, 133)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(167, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(87, 87, 87)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        try {
+            // Obtener valores de los campos de texto
+            Date fecha = Date.valueOf(txfFecha.getText()); // Convierte String a Date
+            int cedulaID = Integer.parseInt(txfCedulaID.getText());
+            double total = Double.parseDouble(txfTotal.getText());
+
+            // Llamar al procedimiento almacenado para crear una nueva venta
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cs = conn.prepareCall("{call CrearVenta(?, ?, ?)}");
+            cs.setDate(1, fecha);
+            cs.setInt(2, cedulaID);
+            cs.setDouble(3, total);
+            cs.execute();
+
+            cs.close();
+            conn.close();
+
+            limpiarCampos();
+            actualizarTabla();
+            JOptionPane.showMessageDialog(this, "Venta agregada exitosamente.");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al agregar la venta: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        try {
+            int ventaID = Integer.parseInt(txfVentaID.getText());
+
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cs = conn.prepareCall("{call LeerVenta(?, ?, ?, ?)}");
+            cs.setInt(1, ventaID);
+            cs.registerOutParameter(2, java.sql.Types.DATE);
+            cs.registerOutParameter(3, java.sql.Types.INTEGER);
+            cs.registerOutParameter(4, java.sql.Types.DOUBLE);
+            cs.execute();
+
+            txfFecha.setText(cs.getDate(2).toString());
+            txfCedulaID.setText(String.valueOf(cs.getInt(3)));
+            txfTotal.setText(String.valueOf(cs.getDouble(4)));
+
+            cs.close();
+            conn.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al buscar la venta: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        try {
+            int ventaID = Integer.parseInt(txfVentaID.getText());
+            Date fecha = Date.valueOf(txfFecha.getText());
+            int cedulaID = Integer.parseInt(txfCedulaID.getText());
+            double total = Double.parseDouble(txfTotal.getText());
+
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cs = conn.prepareCall("{call ActualizarVenta(?, ?, ?, ?)}");
+            cs.setInt(1, ventaID);
+            cs.setDate(2, fecha);
+            cs.setInt(3, cedulaID);
+            cs.setDouble(4, total);
+            cs.execute();
+
+            cs.close();
+            conn.close();
+
+            limpiarCampos();
+            actualizarTabla();
+            JOptionPane.showMessageDialog(this, "Venta actualizada exitosamente.");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar la venta: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        try {
+            int ventaID = Integer.parseInt(txfVentaID.getText());
+
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cs = conn.prepareCall("{call EliminarVenta(?)}");
+            cs.setInt(1, ventaID);
+            cs.execute();
+
+            cs.close();
+            conn.close();
+
+            limpiarCampos();
+            actualizarTabla();
+            JOptionPane.showMessageDialog(this, "Venta eliminada exitosamente.");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar la venta: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void limpiarCampos() {
+        txfVentaID.setText("");
+        txfFecha.setText("");
+        txfCedulaID.setText("");
+        txfTotal.setText("");
+    }
+
+    private void actualizarTabla() {
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            Statement stmt = conn.createStatement();
+
+            String query = "SELECT * FROM Ventas";
+            ResultSet rs = stmt.executeQuery(query);
+
+            DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
+            model.setRowCount(0);
+
+            while (rs.next()) {
+                int ventaID = rs.getInt("VentaID");
+                Date fecha = rs.getDate("Fecha");
+                int cedulaID = rs.getInt("CedulaID");
+                double total = rs.getDouble("Total");
+
+                model.addRow(new Object[]{ventaID, fecha, cedulaID, total});
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla: " + ex.getMessage());
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -101,6 +360,20 @@ public class VentasFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableVentas;
+    private javax.swing.JTextField txfCedulaID;
+    private javax.swing.JTextField txfFecha;
+    private javax.swing.JTextField txfTotal;
+    private javax.swing.JTextField txfVentaID;
     // End of variables declaration//GEN-END:variables
 }

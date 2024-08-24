@@ -8,15 +8,29 @@ package GUI;
  *
  * @author andon
  */
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class InventarioFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form InventarioFrame
      */
+    private DefaultTableModel modeloTabla;
+
     public InventarioFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) tableInventario.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -29,20 +43,147 @@ public class InventarioFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableInventario = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txfInventarioID = new javax.swing.JTextField();
+        txfEmpleadoID = new javax.swing.JTextField();
+        txfProductoID = new javax.swing.JTextField();
+        txfCantidad = new javax.swing.JTextField();
+        txfFechaActualizada = new javax.swing.JTextField();
+        btnAgregar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 204));
 
+        tableInventario.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "InventarioID", "EmpleadoID", "ProductoID", "Cantidad ", "FechaActualizada"
+            }
+        ));
+        jScrollPane1.setViewportView(tableInventario);
+
+        jLabel1.setText("InventarioID");
+
+        jLabel2.setText("EmpleadoID");
+
+        jLabel3.setText("ProductoID");
+
+        jLabel4.setText("Cantidad ");
+
+        jLabel5.setText("FechaActualizada");
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfCantidad)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel5)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfFechaActualizada, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfInventarioID, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel3)))
+                                .addGap(18, 18, 18)
+                                .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 71, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txfInventarioID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txfFechaActualizada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,24 +191,157 @@ public class InventarioFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(145, 145, 145)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(90, 90, 90)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        int empleadoID = Integer.parseInt(txfEmpleadoID.getText());
+        int productoID = Integer.parseInt(txfProductoID.getText());
+        int cantidad = Integer.parseInt(txfCantidad.getText());
+        Date fechaActualizada = new java.sql.Date(new java.util.Date().getTime());
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call crear_inventario(?, ?, ?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, empleadoID);
+                stmt.setInt(2, productoID);
+                stmt.setInt(3, cantidad);
+                stmt.setDate(4, fechaActualizada);
+                stmt.execute();
+                JOptionPane.showMessageDialog(this, "Registro agregado exitosamente.");
+                limpiarCampos();
+                actualizarTabla();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al agregar el registro al inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        int inventarioID = Integer.parseInt(txfInventarioID.getText());
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call leer_inventario(?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, inventarioID);
+                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+                stmt.execute();
+                ResultSet rs = (ResultSet) stmt.getObject(2);
+                if (rs.next()) {
+                    txfEmpleadoID.setText(rs.getString("EmpleadoID"));
+                    txfProductoID.setText(rs.getString("ProductoID"));
+                    txfCantidad.setText(rs.getString("Cantidad"));
+                    txfFechaActualizada.setText(rs.getString("FechaActualizada"));
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registro no encontrado.");
+                    limpiarCampos();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al buscar el registro en el inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int inventarioID = Integer.parseInt(txfInventarioID.getText());
+        int empleadoID = Integer.parseInt(txfEmpleadoID.getText());
+        int productoID = Integer.parseInt(txfProductoID.getText());
+        int cantidad = Integer.parseInt(txfCantidad.getText());
+        Date fechaActualizada = new java.sql.Date(new java.util.Date().getTime());
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call actualizar_inventario(?, ?, ?, ?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, inventarioID);
+                stmt.setInt(2, empleadoID);
+                stmt.setInt(3, productoID);
+                stmt.setInt(4, cantidad);
+                stmt.setDate(5, fechaActualizada);
+                stmt.execute();
+                JOptionPane.showMessageDialog(this, "Registro actualizado exitosamente.");
+                limpiarCampos();
+                actualizarTabla();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar el registro en el inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int inventarioID = Integer.parseInt(txfInventarioID.getText());
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call eliminar_inventario(?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, inventarioID);
+                int rowsAffected = stmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Registro eliminado exitosamente.");
+                    limpiarCampos();
+                    actualizarTabla();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registro no encontrado.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar el registro del inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void limpiarCampos() {
+        txfEmpleadoID.setText("");
+        txfProductoID.setText("");
+        txfCantidad.setText("");
+        txfFechaActualizada.setText("");
+        txfInventarioID.setText("");
+    }
+
+    private void actualizarTabla() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tableInventario.getModel();
+        modeloTabla.setRowCount(0); // Limpiar la tabla antes de actualizar
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String query = "SELECT * FROM Inventario";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                Object[] fila = new Object[5];
+                fila[0] = rs.getInt("InventarioID");
+                fila[1] = rs.getInt("EmpleadoID");
+                fila[2] = rs.getInt("ProductoID");
+                fila[3] = rs.getInt("Cantidad");
+                fila[4] = rs.getDate("FechaActualizada");
+                modeloTabla.addRow(fila);
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla de inventario.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -101,6 +375,22 @@ public class InventarioFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableInventario;
+    private javax.swing.JTextField txfCantidad;
+    private javax.swing.JTextField txfEmpleadoID;
+    private javax.swing.JTextField txfFechaActualizada;
+    private javax.swing.JTextField txfInventarioID;
+    private javax.swing.JTextField txfProductoID;
     // End of variables declaration//GEN-END:variables
 }

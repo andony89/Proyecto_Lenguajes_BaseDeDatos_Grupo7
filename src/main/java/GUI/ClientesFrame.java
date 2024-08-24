@@ -4,6 +4,16 @@
  */
 package GUI;
 
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author andon
@@ -13,10 +23,14 @@ public class ClientesFrame extends javax.swing.JFrame {
     /**
      * Creates new form ClientesFrame
      */
+    private DefaultTableModel modeloTabla;
+
     public ClientesFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) tableClientes.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -29,20 +43,146 @@ public class ClientesFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableClientes = new javax.swing.JTable();
+        Cedula = new javax.swing.JLabel();
+        Nombre = new javax.swing.JLabel();
+        Telefono = new javax.swing.JLabel();
+        Direccion = new javax.swing.JLabel();
+        Email = new javax.swing.JLabel();
+        txfCedula = new javax.swing.JTextField();
+        txfNombre = new javax.swing.JTextField();
+        txfTelefono = new javax.swing.JTextField();
+        txfDireccion = new javax.swing.JTextField();
+        txfEmail = new javax.swing.JTextField();
+        btnAgregar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(204, 0, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 204, 204));
+
+        tableClientes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Cedula", "Nombre", "Telefono", "Direccion", "Email "
+            }
+        ));
+        jScrollPane1.setViewportView(tableClientes);
+
+        Cedula.setText("Cedula");
+
+        Nombre.setText("Nombre");
+
+        Telefono.setText("Telefono");
+
+        Direccion.setText("Direccion");
+
+        Email.setText("Email");
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(Cedula)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txfCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(Nombre)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(Telefono)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(Direccion)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txfDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(Email)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txfEmail)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)))
+                        .addGap(0, 322, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Cedula)
+                    .addComponent(txfCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Nombre)
+                    .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Telefono)
+                    .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Direccion)
+                    .addComponent(txfDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Email)
+                    .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,24 +190,202 @@ public class ClientesFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(150, 150, 150)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(95, 95, 95)
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        String nombre = txfNombre.getText();
+        String telefonoStr = txfTelefono.getText();
+        String direccion = txfDireccion.getText();
+        String email = txfEmail.getText();
+
+        // Validar el teléfono
+        int telefono;
+        try {
+            telefono = Integer.parseInt(telefonoStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Número de teléfono inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cstmt = conn.prepareCall("{call CrearCliente(?, ?, ?, ?)}");
+            cstmt.setString(1, nombre);
+            cstmt.setInt(2, telefono);
+            cstmt.setString(3, direccion);
+            cstmt.setString(4, email);
+            cstmt.execute();
+            JOptionPane.showMessageDialog(this, "Cliente agregado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            actualizarTabla(); // Actualizar la tabla después de agregar
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al agregar el cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        int cedulaID;
+        try {
+            cedulaID = Integer.parseInt(txfCedula.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID de cliente inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cstmt = conn.prepareCall("{call LeerCliente(?, ?, ?, ?, ?)}");
+            cstmt.setInt(1, cedulaID);
+            cstmt.registerOutParameter(2, Types.VARCHAR);
+            cstmt.registerOutParameter(3, Types.NUMERIC);
+            cstmt.registerOutParameter(4, Types.VARCHAR);
+            cstmt.registerOutParameter(5, Types.VARCHAR);
+            cstmt.execute();
+
+            String nombre = cstmt.getString(2);
+            int telefono = cstmt.getInt(3);
+            String direccion = cstmt.getString(4);
+            String email = cstmt.getString(5);
+
+            txfNombre.setText(nombre);
+            txfTelefono.setText(String.valueOf(telefono));
+            txfDireccion.setText(direccion);
+            txfEmail.setText(email);
+
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al buscar el cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        int cedulaID;
+        try {
+            cedulaID = Integer.parseInt(txfCedula.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID de cliente inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String nombre = txfNombre.getText();
+        String telefonoStr = txfTelefono.getText();
+        String direccion = txfDireccion.getText();
+        String email = txfEmail.getText();
+
+        // Validar el teléfono
+        int telefono;
+        try {
+            telefono = Integer.parseInt(telefonoStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Número de teléfono inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            CallableStatement cstmt = conn.prepareCall("{call ActualizarCliente(?, ?, ?, ?, ?)}");
+            cstmt.setInt(1, cedulaID);
+            cstmt.setString(2, nombre);
+            cstmt.setInt(3, telefono);
+            cstmt.setString(4, direccion);
+            cstmt.setString(5, email);
+            cstmt.execute();
+            JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            limpiarCampos();
+            actualizarTabla(); // Actualizar la tabla después de editar
+            cstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar el cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int cedulaID;
+        try {
+            cedulaID = Integer.parseInt(txfCedula.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID de cliente inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar el cliente?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                Connection conn = ConexionOracle.getConnection();
+                CallableStatement cstmt = conn.prepareCall("{call EliminarCliente(?)}");
+                cstmt.setInt(1, cedulaID);
+                cstmt.execute();
+                JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                limpiarCampos();
+                actualizarTabla(); // Actualizar la tabla después de eliminar
+                cstmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al eliminar el cliente.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void limpiarCampos() {
+        txfCedula.setText("");
+        txfNombre.setText("");
+        txfTelefono.setText("");
+        txfDireccion.setText("");
+        txfEmail.setText("");
+    }
+
+    private void actualizarTabla() {
+        modeloTabla.setRowCount(0);
+
+        try {
+            Connection conn = ConexionOracle.getConnection();
+            String query = "SELECT CedulaID, Nombre, Telefono, Direccion, Email FROM Clientes";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                Object[] fila = new Object[5];
+                fila[0] = rs.getInt("CedulaID");
+                fila[1] = rs.getString("Nombre");
+                fila[2] = rs.getString("Telefono");
+                fila[3] = rs.getString("Direccion");
+                fila[4] = rs.getString("Email");
+                modeloTabla.addRow(fila);
+            }
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla de clientes.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -101,6 +419,22 @@ public class ClientesFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Cedula;
+    private javax.swing.JLabel Direccion;
+    private javax.swing.JLabel Email;
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JLabel Telefono;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableClientes;
+    private javax.swing.JTextField txfCedula;
+    private javax.swing.JTextField txfDireccion;
+    private javax.swing.JTextField txfEmail;
+    private javax.swing.JTextField txfNombre;
+    private javax.swing.JTextField txfTelefono;
     // End of variables declaration//GEN-END:variables
 }

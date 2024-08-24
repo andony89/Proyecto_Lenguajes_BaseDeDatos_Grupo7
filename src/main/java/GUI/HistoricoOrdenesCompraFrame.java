@@ -4,19 +4,35 @@
  */
 package GUI;
 
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author andon
  */
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form HistoricoOrdenesCompraFrame
      */
+    private DefaultTableModel modeloTabla;
+
     public HistoricoOrdenesCompraFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) tableHistoricoOrdenesCompra.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -28,21 +44,152 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 32767));
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableHistoricoOrdenesCompra = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txfHistoricoID = new javax.swing.JTextField();
+        txfOrdenCompraID = new javax.swing.JTextField();
+        txfProductoID = new javax.swing.JTextField();
+        txfCantidad = new javax.swing.JTextField();
+        txfEstado = new javax.swing.JTextField();
+        btnAgregar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(102, 255, 102));
+        jPanel1.setBackground(new java.awt.Color(0, 102, 102));
+
+        tableHistoricoOrdenesCompra.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "HistoricoID", "OrdenCompraID", "ProductoID", "Cantidad", "Estado"
+            }
+        ));
+        jScrollPane1.setViewportView(tableHistoricoOrdenesCompra);
+
+        jLabel1.setText("HistoricoID");
+
+        jLabel2.setText("OrdenCompraID");
+
+        jLabel3.setText("ProductoID");
+
+        jLabel4.setText("Cantidad");
+
+        jLabel5.setText("Estado");
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel4)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfCantidad))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txfHistoricoID, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jLabel2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txfOrdenCompraID, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(64, 64, 64)
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txfHistoricoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txfOrdenCompraID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txfProductoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txfCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel5)
+                    .addComponent(txfEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,24 +197,135 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(140, 140, 140)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{CALL CrearHistoricoOrdenCompra(?, ?, ?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, Integer.parseInt(txfOrdenCompraID.getText()));
+                stmt.setInt(2, Integer.parseInt(txfProductoID.getText()));
+                stmt.setInt(3, Integer.parseInt(txfCantidad.getText()));
+                stmt.setString(4, txfEstado.getText());
+                stmt.execute();
+            }
+            JOptionPane.showMessageDialog(this, "Registro creado exitosamente.");
+            limpiarCampos();
+            actualizarTabla();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al crear el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{CALL LeerHistoricoOrdenCompra(?, ?, ?, ?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, Integer.parseInt(txfHistoricoID.getText()));
+                stmt.registerOutParameter(2, Types.INTEGER);
+                stmt.registerOutParameter(3, Types.INTEGER);
+                stmt.registerOutParameter(4, Types.INTEGER);
+                stmt.registerOutParameter(5, Types.VARCHAR);
+                stmt.execute();
+
+                // Establecer los valores en los campos de texto
+                txfOrdenCompraID.setText(String.valueOf(stmt.getInt(2)));
+                txfProductoID.setText(String.valueOf(stmt.getInt(3)));
+                txfCantidad.setText(String.valueOf(stmt.getInt(4)));
+                txfEstado.setText(stmt.getString(5));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al leer el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{CALL ActualizarHistoricoOrdenCompra(?, ?, ?, ?, ?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, Integer.parseInt(txfHistoricoID.getText()));
+                stmt.setInt(2, Integer.parseInt(txfOrdenCompraID.getText()));
+                stmt.setInt(3, Integer.parseInt(txfProductoID.getText()));
+                stmt.setInt(4, Integer.parseInt(txfCantidad.getText()));
+                stmt.setString(5, txfEstado.getText());
+                stmt.execute();
+            }
+            JOptionPane.showMessageDialog(this, "Registro actualizado exitosamente.");
+            limpiarCampos();
+            actualizarTabla();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{CALL EliminarHistoricoOrdenCompra(?)}";
+            try (CallableStatement stmt = conn.prepareCall(sql)) {
+                stmt.setInt(1, Integer.parseInt(txfHistoricoID.getText()));
+                stmt.execute();
+            }
+            JOptionPane.showMessageDialog(this, "Registro eliminado exitosamente.");
+            limpiarCampos();
+            actualizarTabla();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void limpiarCampos() {
+        // Limpiar los campos de texto
+        txfHistoricoID.setText("");
+        txfOrdenCompraID.setText("");
+        txfProductoID.setText("");
+        txfCantidad.setText("");
+        txfEstado.setText("");
+    }
+
+    private void actualizarTabla() {
+        DefaultTableModel model = (DefaultTableModel) tableHistoricoOrdenesCompra.getModel();
+        model.setRowCount(0); // Limpiar la tabla antes de agregar nuevos datos
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "SELECT HistoricoID, OrdenCompraID, ProductoID, Cantidad, Estado FROM HistoricoOrdenesCompra";
+            try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+                    int historicoID = rs.getInt("HistoricoID");
+                    int ordenCompraID = rs.getInt("OrdenCompraID");
+                    int productoID = rs.getInt("ProductoID");
+                    int cantidad = rs.getInt("Cantidad");
+                    String estado = rs.getString("Estado");
+
+                    model.addRow(new Object[]{historicoID, ordenCompraID, productoID, cantidad, estado});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -101,6 +359,23 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tableHistoricoOrdenesCompra;
+    private javax.swing.JTextField txfCantidad;
+    private javax.swing.JTextField txfEstado;
+    private javax.swing.JTextField txfHistoricoID;
+    private javax.swing.JTextField txfOrdenCompraID;
+    private javax.swing.JTextField txfProductoID;
     // End of variables declaration//GEN-END:variables
 }
