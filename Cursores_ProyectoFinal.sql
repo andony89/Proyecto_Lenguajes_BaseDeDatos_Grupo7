@@ -148,14 +148,15 @@ END ObtenerEmpleadosPorSalario;
 
 --Cursor Producto (Categoria)
 CREATE OR REPLACE PROCEDURE ObtenerProductosPorCategoria (
-    p_CategoriaID NUMBER,
+    p_CategoriaNombre VARCHAR2,
     p_cursor OUT SYS_REFCURSOR
 ) IS
 BEGIN
     OPEN p_cursor FOR
-        SELECT ProductoID, Nombre, Precio, Stock, ProveedorID
-        FROM Productos
-        WHERE CategoriaID = p_CategoriaID;
+        SELECT p.ProductoID, p.Nombre, p.Precio, p.Slock, p.ProveedorID
+        FROM Productos p
+        JOIN Categorias c ON p.CategoriaID = c.CategoriaID
+        WHERE c.Nombre = p_CategoriaNombre;
 END ObtenerProductosPorCategoria;
 /
 
