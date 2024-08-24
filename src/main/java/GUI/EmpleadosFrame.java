@@ -4,6 +4,16 @@
  */
 package GUI;
 
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author andon
@@ -13,10 +23,14 @@ public class EmpleadosFrame extends javax.swing.JFrame {
     /**
      * Creates new form EmpleadosFrame
      */
+    private DefaultTableModel modeloTabla;
+
     public EmpleadosFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) TableEmpleados.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -28,21 +42,234 @@ public class EmpleadosFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField6 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TableEmpleados = new javax.swing.JTable();
+        btnBuscar = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        txfNombre = new javax.swing.JTextField();
+        txfEmpleadoID = new javax.swing.JTextField();
+        txfTelefono = new javax.swing.JTextField();
+        txfEmail = new javax.swing.JTextField();
+        txfPosicion = new javax.swing.JTextField();
+        txfSalario = new javax.swing.JTextField();
+        Nombre = new javax.swing.JLabel();
+        EmpleadoID = new javax.swing.JLabel();
+        Telefono = new javax.swing.JLabel();
+        Email = new javax.swing.JLabel();
+        Posicion = new javax.swing.JLabel();
+        FContratacion = new javax.swing.JLabel();
+        Salario = new javax.swing.JLabel();
+        txfFechaC = new javax.swing.JTextField();
+
+        jTextField6.setText("jTextField6");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 255));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
+
+        TableEmpleados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "EmpleadoID", "Nombre", "Telefono", "Email", "Posicion", "F.Contratacion", "Salario"
+            }
+        ));
+        jScrollPane1.setViewportView(TableEmpleados);
+        if (TableEmpleados.getColumnModel().getColumnCount() > 0) {
+            TableEmpleados.getColumnModel().getColumn(0).setHeaderValue("EmpleadoID");
+            TableEmpleados.getColumnModel().getColumn(1).setHeaderValue("Nombre");
+            TableEmpleados.getColumnModel().getColumn(2).setHeaderValue("Telefono");
+            TableEmpleados.getColumnModel().getColumn(3).setHeaderValue("Email");
+            TableEmpleados.getColumnModel().getColumn(4).setHeaderValue("Posicion");
+            TableEmpleados.getColumnModel().getColumn(5).setHeaderValue("F.Contratacion");
+            TableEmpleados.getColumnModel().getColumn(6).setHeaderValue("Salario");
+        }
+
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        txfNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfNombreActionPerformed(evt);
+            }
+        });
+
+        txfEmpleadoID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfEmpleadoIDActionPerformed(evt);
+            }
+        });
+
+        txfTelefono.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfTelefonoActionPerformed(evt);
+            }
+        });
+
+        txfEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfEmailActionPerformed(evt);
+            }
+        });
+
+        txfPosicion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfPosicionActionPerformed(evt);
+            }
+        });
+
+        txfSalario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfSalarioActionPerformed(evt);
+            }
+        });
+
+        Nombre.setText("Nombre");
+
+        EmpleadoID.setText("EmpleadoID");
+
+        Telefono.setText("Telefono");
+
+        Email.setText("Email");
+
+        Posicion.setText("Posicion");
+
+        FContratacion.setText("F.Contratacion");
+
+        Salario.setText("Salario");
+
+        txfFechaC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfFechaCActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(FContratacion)
+                        .addGap(18, 18, 18)
+                        .addComponent(txfFechaC, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(Salario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(Posicion)
+                        .addGap(26, 26, 26)
+                        .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnBuscar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Telefono, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(589, 589, 589))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(EmpleadoID)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(533, 533, 533))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Nombre)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(EmpleadoID)
+                        .addComponent(txfEmpleadoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Email)
+                    .addComponent(txfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Telefono)
+                    .addComponent(txfTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Salario)
+                    .addComponent(txfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Posicion)
+                    .addComponent(txfPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FContratacion)
+                    .addComponent(txfFechaC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnEditar)
+                    .addComponent(btnEliminar))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,24 +277,197 @@ public class EmpleadosFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(126, 126, 126)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(174, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(118, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        String empleadoIDStr = txfEmpleadoID.getText().trim();
+
+        if (empleadoIDStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID de empleado para buscar.");
+            return;
+        }
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            // Llamar al procedimiento almacenado
+            String sql = "{call leer_empleado(?, ?)}";
+            CallableStatement cstmt = conn.prepareCall(sql);
+            cstmt.setInt(1, Integer.parseInt(empleadoIDStr));
+            cstmt.registerOutParameter(2, OracleTypes.CURSOR); 
+
+            cstmt.execute(); // Ejecución del procedimiento
+
+            ResultSet rs = (ResultSet) cstmt.getObject(2);
+
+            modeloTabla.setRowCount(0); // Limpiar la tabla antes de agregar nuevos resultados
+
+            if (rs.next()) {
+                int empleadoID = rs.getInt("EmpleadoID");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String email = rs.getString("Email");
+                String posicion = rs.getString("Posicion");
+                Date fechaContratacion = rs.getDate("FechaContratacion");
+                double salario = rs.getDouble("Salario");
+
+                modeloTabla.addRow(new Object[]{empleadoID, nombre, telefono, email, posicion, fechaContratacion, salario});
+            } else {
+                JOptionPane.showMessageDialog(this, "Empleado no encontrado.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar empleado: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            // Definir el procedimiento almacenado a llamar
+            String sql = "{call crear_empleado(?, ?, ?, ?, ?, ?)}";
+
+            // Preparar el CallableStatement
+            CallableStatement cstmt = conn.prepareCall(sql);
+
+            // Configurar los parámetros del procedimiento
+            cstmt.setString(1, txfNombre.getText());
+            cstmt.setString(2, txfTelefono.getText());
+            cstmt.setString(3, txfEmail.getText());
+            cstmt.setString(4, txfPosicion.getText());
+
+            // Convertir la fecha al formato adecuado
+            java.sql.Date fechaContratacion = java.sql.Date.valueOf(txfFechaC.getText()); // Asegúrate de que el formato sea yyyy-mm-dd
+            cstmt.setDate(5, fechaContratacion);
+
+            // Convertir el salario a tipo Double
+            double salario = Double.parseDouble(txfSalario.getText());
+            cstmt.setDouble(6, salario);
+
+            // Ejecutar el procedimiento almacenado
+            cstmt.executeUpdate();
+
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(this, "Empleado agregado exitosamente.");
+
+            // Actualizar la tabla o interfaz de usuario
+            actualizarTabla();
+        } catch (SQLException e) {
+            // Manejo de errores
+            JOptionPane.showMessageDialog(this, "Error al agregar empleado: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            // Manejo de errores para números y formato de fecha
+            JOptionPane.showMessageDialog(this, "Error en el formato de datos: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            // Manejo de errores para fechas
+            JOptionPane.showMessageDialog(this, "Error en el formato de fecha: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call actualizar_empleado(?,?,?,?,?,?,?)}";
+            CallableStatement cstmt = conn.prepareCall(sql);
+
+            // Obtener valores del formulario y establecer en el procedimiento
+            cstmt.setInt(1, Integer.parseInt(txfEmpleadoID.getText()));
+            cstmt.setString(2, txfNombre.getText());
+            cstmt.setString(3, txfTelefono.getText());
+            cstmt.setString(4, txfEmail.getText());
+            cstmt.setString(5, txfPosicion.getText());
+            cstmt.setDate(6, java.sql.Date.valueOf(txfFechaC.getText())); // formato  yyyy-mm-dd
+            cstmt.setDouble(7, Double.parseDouble(txfSalario.getText()));
+
+            // Ejecutar la actualización
+            cstmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Empleado actualizado exitosamente.");
+            actualizarTabla();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar empleado: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "{call eliminar_empleado(?)}";
+            CallableStatement cstmt = conn.prepareCall(sql);
+
+            // Establecer el parámetro del procedimiento
+            cstmt.setInt(1, Integer.parseInt(txfEmpleadoID.getText()));
+
+            // Ejecutar la eliminación
+            cstmt.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Empleado eliminado exitosamente.");
+            actualizarTabla();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar empleado: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void txfEmpleadoIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfEmpleadoIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfEmpleadoIDActionPerformed
+
+    private void txfFechaCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfFechaCActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfFechaCActionPerformed
+
+    private void txfSalarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfSalarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfSalarioActionPerformed
+
+    private void txfTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfTelefonoActionPerformed
+
+    private void txfPosicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfPosicionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfPosicionActionPerformed
+
+    private void txfEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfEmailActionPerformed
+
+    private void txfNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfNombreActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void actualizarTabla() {
+        modeloTabla.setRowCount(0); // Limpiar la tabla
+
+        try (Connection conn = ConexionOracle.getConnection()) {
+            String sql = "SELECT * FROM EMPLEADOS";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int empleadoID = rs.getInt("EmpleadoID");
+                String nombre = rs.getString("Nombre");
+                String telefono = rs.getString("Telefono");
+                String email = rs.getString("Email");
+                String posicion = rs.getString("Posicion");
+                Date fechaContratacion = rs.getDate("FechaContratacion");
+                double salario = rs.getDouble("Salario");
+
+                modeloTabla.addRow(new Object[]{empleadoID, nombre, telefono, email, posicion, fechaContratacion, salario});
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar datos: " + e.getMessage());
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -101,6 +501,27 @@ public class EmpleadosFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Email;
+    private javax.swing.JLabel EmpleadoID;
+    private javax.swing.JLabel FContratacion;
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JLabel Posicion;
+    private javax.swing.JLabel Salario;
+    private javax.swing.JTable TableEmpleados;
+    private javax.swing.JLabel Telefono;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField txfEmail;
+    private javax.swing.JTextField txfEmpleadoID;
+    private javax.swing.JTextField txfFechaC;
+    private javax.swing.JTextField txfNombre;
+    private javax.swing.JTextField txfPosicion;
+    private javax.swing.JTextField txfSalario;
+    private javax.swing.JTextField txfTelefono;
     // End of variables declaration//GEN-END:variables
 }

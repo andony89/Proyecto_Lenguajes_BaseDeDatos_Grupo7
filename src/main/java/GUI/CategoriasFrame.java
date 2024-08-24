@@ -4,6 +4,17 @@
  */
 package GUI;
 
+
+import BD.ConexionOracle;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import oracle.jdbc.OracleTypes;
+import oracle.jdbc.OracleCallableStatement;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author andon
@@ -12,11 +23,18 @@ public class CategoriasFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form CategoriasFrame
+     * 
      */
+    
+    
+    private DefaultTableModel modeloTabla;
+    
     public CategoriasFrame() {
         initComponents();
         // Configurar el comportamiento de cierre para que solo cierre esta ventana
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        modeloTabla = (DefaultTableModel) TablaCategorias.getModel();
+        actualizarTabla();
     }
 
     /**
@@ -29,15 +47,15 @@ public class CategoriasFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        btnAgregar1 = new javax.swing.JButton();
+        btnBuscar1 = new javax.swing.JButton();
+        btnEliminar1 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        txfCategoriaID1 = new javax.swing.JTextField();
+        txfNombre1 = new javax.swing.JTextField();
+        txfDescripcion1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TablaCategorias = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -47,37 +65,57 @@ public class CategoriasFrame extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 153));
 
-        jButton1.setText("Agregar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar1.setText("Agregar");
+        btnAgregar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAgregar1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Buscar");
-
-        jButton3.setText("Eliminar");
-
-        jButton4.setText("Editar");
-
-        jTextField1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jTextField1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-
-        jTextField2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscar1.setText("Buscar");
+        btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                btnBuscar1ActionPerformed(evt);
             }
         });
 
-        jTextField3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar1.setText("Eliminar");
+        btnEliminar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                btnEliminar1ActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        txfCategoriaID1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        txfCategoriaID1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txfCategoriaID1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfCategoriaID1ActionPerformed(evt);
+            }
+        });
+
+        txfNombre1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        txfNombre1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfNombre1ActionPerformed(evt);
+            }
+        });
+
+        txfDescripcion1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        txfDescripcion1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfDescripcion1ActionPerformed(evt);
+            }
+        });
+
+        TablaCategorias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -88,7 +126,7 @@ public class CategoriasFrame extends javax.swing.JFrame {
                 "CategoriaID", "Nombre", "Descripcion"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(TablaCategorias);
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -113,15 +151,15 @@ public class CategoriasFrame extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txfDescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txfCategoriaID1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txfNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 78, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -130,16 +168,18 @@ public class CategoriasFrame extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAgregar1)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)
+                        .addComponent(btnBuscar1)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton3)
+                        .addComponent(btnEliminar1)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton4)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnEditar)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,21 +191,21 @@ public class CategoriasFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField2)
+                        .addComponent(txfNombre1)
                         .addComponent(jLabel3))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField1)
+                        .addComponent(txfCategoriaID1)
                         .addComponent(jLabel2)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txfDescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton1))
+                    .addComponent(btnBuscar1)
+                    .addComponent(btnEliminar1)
+                    .addComponent(btnEditar)
+                    .addComponent(btnAgregar1))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -189,21 +229,150 @@ public class CategoriasFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnAgregar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregar1ActionPerformed
+        String nombre = txfNombre1.getText();
+        String descripcion = txfDescripcion1.getText();
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+        if (nombre.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call crear_categoria(?, ?)}")) {
+            stmt.setString(1, nombre);
+            stmt.setString(2, descripcion);
+            stmt.execute();
+            JOptionPane.showMessageDialog(this, "Categoría agregada exitosamente.");
+            actualizarTabla();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregar1ActionPerformed
 
+    private void txfDescripcion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfDescripcion1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfDescripcion1ActionPerformed
+
+    private void txfNombre1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfNombre1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfNombre1ActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        String categoriaIDText = txfCategoriaID1.getText();
+        String nombre = txfNombre1.getText();
+        String descripcion = txfDescripcion1.getText();
+
+        if (categoriaIDText.isEmpty() || nombre.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call actualizar_categoria(?, ?, ?)}")) {
+            int categoriaID = Integer.parseInt(categoriaIDText);
+            stmt.setInt(1, categoriaID);
+            stmt.setString(2, nombre);
+            stmt.setString(3, descripcion);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Categoría actualizada exitosamente.");
+                actualizarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
+        String categoriaIDText = txfCategoriaID1.getText();
+
+        if (categoriaIDText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese el ID de la categoría.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call leer_categoria(?, ?)}")) {
+            int categoriaID = Integer.parseInt(categoriaIDText);
+            stmt.setInt(1, categoriaID);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            stmt.execute();
+            ResultSet rs = ((OracleCallableStatement) stmt).getCursor(2);
+
+            modeloTabla.setRowCount(0); // Limpiar la tabla antes de mostrar resultados
+            if (rs.next()) {
+                txfNombre1.setText(rs.getString("Nombre"));
+                txfDescripcion1.setText(rs.getString("Descripcion"));
+                modeloTabla.addRow(new Object[]{
+                    rs.getInt("CategoriaID"),
+                    rs.getString("Nombre"),
+                    rs.getString("Descripcion")
+                });
+            } else {
+                JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al buscar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnBuscar1ActionPerformed
+
+    private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
+        String categoriaIDText = txfCategoriaID1.getText();
+
+        if (categoriaIDText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese el ID de la categoría.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call eliminar_categoria(?)}")) {
+            int categoriaID = Integer.parseInt(categoriaIDText);
+            stmt.setInt(1, categoriaID);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Categoría eliminada exitosamente.");
+                txfNombre1.setText("");
+                txfDescripcion1.setText("");
+                actualizarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminar1ActionPerformed
+
+    private void txfCategoriaID1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfCategoriaID1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfCategoriaID1ActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
+    
+    
+    private void actualizarTabla() {
+        try (Connection conn = ConexionOracle.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM Categorias")) {
+
+            modeloTabla.setRowCount(0); // Limpiar la tabla antes de mostrar resultados
+            while (rs.next()) {
+                modeloTabla.addRow(new Object[]{
+                    rs.getInt("CategoriaID"),
+                    rs.getString("Nombre"),
+                    rs.getString("Descripcion")
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar la tabla: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+
+    
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -237,19 +406,19 @@ public class CategoriasFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JTable TablaCategorias;
+    private javax.swing.JButton btnAgregar1;
+    private javax.swing.JButton btnBuscar1;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField txfCategoriaID1;
+    private javax.swing.JTextField txfDescripcion1;
+    private javax.swing.JTextField txfNombre1;
     // End of variables declaration//GEN-END:variables
 }
