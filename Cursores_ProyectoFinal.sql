@@ -1,24 +1,9 @@
 --Cursor Empleados
-CREATE OR REPLACE PROCEDURE ObtenerEmpleados IS
-    CURSOR c_empleados IS
+CREATE OR REPLACE PROCEDURE ObtenerEmpleados(empleados OUT SYS_REFCURSOR) IS
+BEGIN
+    OPEN empleados FOR
         SELECT EmpleadoID, Nombre, Telefono, Email, Posicion, FechaContratacion, Salario
         FROM Empleados;
-    
-    v_empleado c_empleados%ROWTYPE;
-BEGIN
-    IF NOT c_empleados%ISOPEN THEN
-        OPEN c_empleados;
-    END IF;
-    
-    LOOP
-        FETCH c_empleados INTO v_empleado;
-        EXIT WHEN c_empleados%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(v_empleado.Nombre || ' - ' || v_empleado.Telefono);
-    END LOOP;
-    
-    IF c_empleados%ISOPEN THEN
-        CLOSE c_empleados;
-    END IF;
 END ObtenerEmpleados;
 /
 
