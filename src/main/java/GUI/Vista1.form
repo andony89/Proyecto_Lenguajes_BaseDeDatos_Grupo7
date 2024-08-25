@@ -44,7 +44,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,23 +61,31 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="btnOrdenesCompra" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnInventario" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnProveedores" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnEmpleados" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnHistoricoOrdenesCompra" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="btnOrdenesCompra" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnInventario" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnProveedores" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnEmpleados" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnHistoricoOrdenesCompra" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="btnCategorias" pref="126" max="32767" attributes="0"/>
+                              <Component id="btnClientes" max="32767" attributes="0"/>
+                              <Component id="btnFactura" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnVentas" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnProductos" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="88" max="-2" attributes="0"/>
+                          <Component id="btnVistasBaseDatos" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnCategorias" pref="126" max="32767" attributes="0"/>
-                      <Component id="btnClientes" max="32767" attributes="0"/>
-                      <Component id="btnFactura" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnVentas" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnProductos" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace pref="22" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -109,7 +117,9 @@
                       <Component id="btnOrdenesCompra" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnProductos" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="19" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="btnVistasBaseDatos" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -193,6 +203,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVentasActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnVistasBaseDatos">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="VistasBaseDatos"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVistasBaseDatosActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
