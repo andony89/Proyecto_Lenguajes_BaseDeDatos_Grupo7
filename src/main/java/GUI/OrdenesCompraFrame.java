@@ -247,42 +247,48 @@ public class OrdenesCompraFrame extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
             // Obtener el ID de la orden de compra a buscar
-            int ordenCompraID = Integer.parseInt(txfOrdenCompraID.getText());
-
-            // Llamar al procedimiento almacenado para leer la orden de compra
-            Connection conn = ConexionOracle.getConnection();
-            CallableStatement cs = conn.prepareCall("{call LeerOrdenCompra(?, ?, ?, ?, ?)}");
-            cs.setInt(1, ordenCompraID);
-            cs.registerOutParameter(2, java.sql.Types.DATE);
-            cs.registerOutParameter(3, java.sql.Types.INTEGER);
-            cs.registerOutParameter(4, java.sql.Types.DOUBLE);
-            cs.registerOutParameter(5, java.sql.Types.VARCHAR);
-            cs.execute();
-
-            // Obtener los valores devueltos
-            Date fecha = cs.getDate(2);
-            int proveedorID = cs.getInt(3);
-            double total = cs.getDouble(4);
-            String estado = cs.getString(5);
-
-            // Limpiar la JTable
-            DefaultTableModel model = (DefaultTableModel) tableOrdenesCompra.getModel();
-            model.setRowCount(0);
-
-            // Verificar si se encontró la orden de compra
-            if (fecha != null) {
-                // Añadir la fila con los datos obtenidos
-                model.addRow(new Object[]{ordenCompraID, fecha, proveedorID, total, estado});
-            } else {
-                // Informar al usuario que no se encontró la orden de compra
-                JOptionPane.showMessageDialog(this, "No se encontró la orden de compra con el ID especificado.");
+            int ordenCompraID;
+            try {
+                ordenCompraID = Integer.parseInt(txfOrdenCompraID.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "ID de orden de compra inválido. Asegúrese de ingresar un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-            // Cerrar recursos
-            cs.close();
-            conn.close();
+            // Llamar al procedimiento almacenado para leer la orden de compra
+            try (Connection conn = ConexionOracle.getConnection()) {
+                String sql = "{call pkg_ordenes_compra.LeerOrdenCompra(?, ?, ?, ?, ?)}";
+                try (CallableStatement cs = conn.prepareCall(sql)) {
+                    cs.setInt(1, ordenCompraID);
+                    cs.registerOutParameter(2, java.sql.Types.DATE);
+                    cs.registerOutParameter(3, java.sql.Types.INTEGER);
+                    cs.registerOutParameter(4, java.sql.Types.DOUBLE);
+                    cs.registerOutParameter(5, java.sql.Types.VARCHAR);
+                    cs.execute();
+
+                    // Obtener los valores devueltos
+                    Date fecha = cs.getDate(2);
+                    int proveedorID = cs.getInt(3);
+                    double total = cs.getDouble(4);
+                    String estado = cs.getString(5);
+
+                    // Limpiar la JTable
+                    DefaultTableModel model = (DefaultTableModel) tableOrdenesCompra.getModel();
+                    model.setRowCount(0);
+
+                    // Verificar si se encontró la orden de compra
+                    if (fecha != null) {
+                        // Añadir la fila con los datos obtenidos
+                        model.addRow(new Object[]{ordenCompraID, fecha, proveedorID, total, estado});
+                    } else {
+                        // Informar al usuario que no se encontró la orden de compra
+                        JOptionPane.showMessageDialog(this, "No se encontró la orden de compra con el ID especificado.");
+                    }
+                }
+            }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al buscar la orden de compra: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al buscar la orden de compra: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 

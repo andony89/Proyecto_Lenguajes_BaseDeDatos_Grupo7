@@ -263,14 +263,20 @@ public class ClientesFrame extends javax.swing.JFrame {
         CallableStatement cstmt = null;
         try {
             conn = ConexionOracle.getConnection();
-            cstmt = conn.prepareCall("{call LeerCliente(?, ?, ?, ?, ?)}");
+            cstmt = conn.prepareCall("{call pkg_clientes.LeerCliente(?, ?, ?, ?, ?)}");
+
+            // Configurar el parámetro de entrada
             cstmt.setInt(1, cedulaID);
-            cstmt.registerOutParameter(2, Types.VARCHAR);
-            cstmt.registerOutParameter(3, Types.NUMERIC);
-            cstmt.registerOutParameter(4, Types.VARCHAR);
-            cstmt.registerOutParameter(5, Types.VARCHAR);
+
+            // Registrar los parámetros de salida
+            cstmt.registerOutParameter(2, Types.VARCHAR); // p_Nombre
+            cstmt.registerOutParameter(3, Types.NUMERIC); // p_Telefono
+            cstmt.registerOutParameter(4, Types.VARCHAR); // p_Direccion
+            cstmt.registerOutParameter(5, Types.VARCHAR); // p_Email
+
             cstmt.execute();
 
+            // Obtener los valores de los parámetros de salida
             String nombre = cstmt.getString(2);
             int telefono = cstmt.getInt(3);
             String direccion = cstmt.getString(4);

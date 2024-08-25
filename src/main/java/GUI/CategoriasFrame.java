@@ -301,13 +301,16 @@ public class CategoriasFrame extends javax.swing.JFrame {
             return;
         }
 
-        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call leer_categoria(?, ?)}")) {
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement stmt = conn.prepareCall("{call pkg_categorias.LeerCategoria(?, ?, ?)}")) {
+
             int categoriaID = Integer.parseInt(categoriaIDText);
             stmt.setInt(1, categoriaID);
-            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            // Registrar los parámetros de salida
+            stmt.registerOutParameter(2, OracleTypes.VARCHAR);  // p_Nombre
+            stmt.registerOutParameter(3, OracleTypes.VARCHAR);  // p_Descripcion
 
             stmt.execute();
-            ResultSet rs = ((OracleCallableStatement) stmt).getCursor(2);
 
             // Limpiar la tabla antes de mostrar resultados
             modeloTabla.setRowCount(0);
@@ -315,13 +318,17 @@ public class CategoriasFrame extends javax.swing.JFrame {
             txfNombre1.setText("");
             txfDescripcion1.setText("");
 
-            if (rs.next()) {
-                txfNombre1.setText(rs.getString("Nombre"));
-                txfDescripcion1.setText(rs.getString("Descripcion"));
+            // Obtener los valores de los parámetros de salida
+            String nombre = stmt.getString(2);
+            String descripcion = stmt.getString(3);
+
+            if (nombre != null) {
+                txfNombre1.setText(nombre);
+                txfDescripcion1.setText(descripcion);
                 modeloTabla.addRow(new Object[]{
-                    rs.getInt("CategoriaID"),
-                    rs.getString("Nombre"),
-                    rs.getString("Descripcion")
+                    categoriaID,
+                    nombre,
+                    descripcion
                 });
             } else {
                 JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);

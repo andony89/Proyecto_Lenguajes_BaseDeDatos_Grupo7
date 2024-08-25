@@ -242,33 +242,54 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        try (Connection conn = ConexionOracle.getConnection()) {
-            String sql = "{CALL LeerHistoricoOrdenCompra(?, ?, ?, ?, ?)}";
-            try (CallableStatement stmt = conn.prepareCall(sql)) {
-                // Establecer el parámetro IN
-                stmt.setInt(1, Integer.parseInt(txfHistoricoID.getText()));
+        String historicoIDText = txfHistoricoID.getText();
 
-                // Registrar los parámetros OUT
-                stmt.registerOutParameter(2, Types.INTEGER);
-                stmt.registerOutParameter(3, Types.INTEGER);
-                stmt.registerOutParameter(4, Types.INTEGER);
-                stmt.registerOutParameter(5, Types.VARCHAR);
+        // Verificar si el campo de texto está vacío
+        if (historicoIDText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un ID de histórico de orden de compra.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-                // Ejecutar el procedimiento
-                stmt.execute();
+        try {
+            // Convertir el ID de histórico a número
+            int historicoID;
+            try {
+                historicoID = Integer.parseInt(historicoIDText);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El ID de histórico debe ser un número válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
-                // Obtener los valores de los parámetros OUT
-                int ordenCompraID = stmt.getInt(2);
-                int productoID = stmt.getInt(3);
-                int cantidad = stmt.getInt(4);
-                String estado = stmt.getString(5);
+            // Crear la conexión a la base de datos
+            try (Connection conn = ConexionOracle.getConnection()) {
+                // Llamar al procedimiento almacenado
+                String sql = "{CALL pkg_historico_ordenes_compra.LeerHistoricoOrdenCompra(?, ?, ?, ?, ?)}";
+                try (CallableStatement stmt = conn.prepareCall(sql)) {
+                    // Establecer el parámetro IN
+                    stmt.setInt(1, historicoID);
 
-                // Actualizar la tabla con el resultado del procedimiento
-                actualizarTablaConResultado(Integer.parseInt(txfHistoricoID.getText()), ordenCompraID, productoID, cantidad, estado);
+                    // Registrar los parámetros OUT
+                    stmt.registerOutParameter(2, Types.NUMERIC); // OrdenCompraID
+                    stmt.registerOutParameter(3, Types.NUMERIC); // ProductoID
+                    stmt.registerOutParameter(4, Types.NUMERIC); // Cantidad
+                    stmt.registerOutParameter(5, Types.VARCHAR); // Estado
+
+                    // Ejecutar el procedimiento
+                    stmt.execute();
+
+                    // Obtener los valores de los parámetros OUT
+                    int ordenCompraID = stmt.getInt(2);
+                    int productoID = stmt.getInt(3);
+                    int cantidad = stmt.getInt(4);
+                    String estado = stmt.getString(5);
+
+                    // Actualizar la tabla con el resultado del procedimiento
+                    actualizarTablaConResultado(historicoID, ordenCompraID, productoID, cantidad, estado);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al leer el registro: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 

@@ -17,6 +17,7 @@ import oracle.jdbc.OracleCallableStatement;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 public class InventarioFrame extends javax.swing.JFrame {
 
@@ -243,44 +244,61 @@ public class InventarioFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        int inventarioID = Integer.parseInt(txfInventarioID.getText());
+        int inventarioID;
+
+        // Validación para asegurarse de que el ID de inventario es un número válido
+        try {
+            inventarioID = Integer.parseInt(txfInventarioID.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID de inventario inválido. Asegúrese de ingresar un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         try (Connection conn = ConexionOracle.getConnection()) {
-            String sql = "{call leer_inventario(?, ?)}";
+            String sql = "{call pkg_inventario.LeerInventario(?, ?, ?, ?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
                 stmt.setInt(1, inventarioID);
-                stmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+                // Registrar los parámetros de salida
+                stmt.registerOutParameter(2, Types.NUMERIC);    // p_EmpleadoID
+                stmt.registerOutParameter(3, Types.NUMERIC);    // p_ProductoID
+                stmt.registerOutParameter(4, Types.NUMERIC);    // p_Cantidad
+                stmt.registerOutParameter(5, Types.DATE);      // p_FechaActualizada
+
                 stmt.execute();
-                ResultSet rs = (ResultSet) stmt.getObject(2);
 
                 // Limpiar la tabla antes de mostrar el nuevo resultado
                 modeloTabla.setRowCount(0);
 
-                if (rs.next()) {
+                // Obtener los valores de los parámetros de salida
+                int empleadoID = stmt.getInt(2);
+                int productoID = stmt.getInt(3);
+                int cantidad = stmt.getInt(4);
+                Date fechaActualizada = stmt.getDate(5);
+
+                if (empleadoID != 0) {
                     Object[] fila = new Object[5];
-                    fila[0] = rs.getInt("InventarioID");
-                    fila[1] = rs.getInt("EmpleadoID");
-                    fila[2] = rs.getInt("ProductoID");
-                    fila[3] = rs.getInt("Cantidad");
-                    fila[4] = rs.getDate("FechaActualizada");
+                    fila[0] = inventarioID;
+                    fila[1] = empleadoID;
+                    fila[2] = productoID;
+                    fila[3] = cantidad;
+                    fila[4] = fechaActualizada;
                     modeloTabla.addRow(fila);
+
                     // Llenar los campos de texto si es necesario
-                    txfEmpleadoID.setText(rs.getString("EmpleadoID"));
-                    txfProductoID.setText(rs.getString("ProductoID"));
-                    txfCantidad.setText(rs.getString("Cantidad"));
-                    txfFechaActualizada.setText(rs.getString("FechaActualizada"));
+                    txfEmpleadoID.setText(String.valueOf(empleadoID));
+                    txfProductoID.setText(String.valueOf(productoID));
+                    txfCantidad.setText(String.valueOf(cantidad));
+                    txfFechaActualizada.setText(new SimpleDateFormat("dd-MM-yyyy").format(fechaActualizada));
                 } else {
                     JOptionPane.showMessageDialog(this, "Registro no encontrado.");
                     limpiarCampos();
                 }
-
-                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al buscar el registro en el inventario.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed

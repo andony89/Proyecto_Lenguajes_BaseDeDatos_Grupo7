@@ -356,28 +356,32 @@ public class EmpleadosFrame extends javax.swing.JFrame {
         }
 
         try (Connection conn = ConexionOracle.getConnection()) {
-            // Llamar al procedimiento almacenado
-            String sql = "{call leer_empleado(?, ?)}";
+            // Llamar al procedimiento almacenado desde el paquete
+            String sql = "{call pkg_empleados.LeerEmpleado(?, ?, ?, ?, ?, ?, ?)}";
             CallableStatement cstmt = conn.prepareCall(sql);
             cstmt.setInt(1, Integer.parseInt(empleadoIDStr));
-            cstmt.registerOutParameter(2, OracleTypes.CURSOR);
+
+            // Registrar los parámetros de salida
+            cstmt.registerOutParameter(2, OracleTypes.VARCHAR);  // p_Nombre
+            cstmt.registerOutParameter(3, OracleTypes.VARCHAR);  // p_Telefono
+            cstmt.registerOutParameter(4, OracleTypes.VARCHAR);  // p_Email
+            cstmt.registerOutParameter(5, OracleTypes.VARCHAR);  // p_Posicion
+            cstmt.registerOutParameter(6, OracleTypes.DATE);     // p_FechaContratacion
+            cstmt.registerOutParameter(7, OracleTypes.NUMBER);   // p_Salario
 
             cstmt.execute(); // Ejecución del procedimiento
 
-            ResultSet rs = (ResultSet) cstmt.getObject(2);
-
             modeloTabla.setRowCount(0); // Limpiar la tabla antes de agregar nuevos resultados
 
-            if (rs.next()) {
-                int empleadoID = rs.getInt("EmpleadoID");
-                String nombre = rs.getString("Nombre");
-                String telefono = rs.getString("Telefono");
-                String email = rs.getString("Email");
-                String posicion = rs.getString("Posicion");
-                Date fechaContratacion = rs.getDate("FechaContratacion");
-                double salario = rs.getDouble("Salario");
+            String nombre = cstmt.getString(2);
+            String telefono = cstmt.getString(3);
+            String email = cstmt.getString(4);
+            String posicion = cstmt.getString(5);
+            Date fechaContratacion = cstmt.getDate(6);
+            double salario = cstmt.getDouble(7);
 
-                modeloTabla.addRow(new Object[]{empleadoID, nombre, telefono, email, posicion, fechaContratacion, salario});
+            if (nombre != null) {  // Verificar si el empleado fue encontrado
+                modeloTabla.addRow(new Object[]{Integer.parseInt(empleadoIDStr), nombre, telefono, email, posicion, fechaContratacion, salario});
             } else {
                 JOptionPane.showMessageDialog(this, "Empleado no encontrado.");
             }
@@ -385,6 +389,7 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al buscar empleado: " + e.getMessage());
         }
         limpiarCampos();
+
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -395,7 +400,6 @@ public class EmpleadosFrame extends javax.swing.JFrame {
             // Preparar el CallableStatement
             CallableStatement cstmt = conn.prepareCall(sql);
 
-            // Configurar los parámetros del procedimiento
             cstmt.setString(1, txfNombre.getText());
             cstmt.setString(2, txfTelefono.getText());
             cstmt.setString(3, txfEmail.getText());

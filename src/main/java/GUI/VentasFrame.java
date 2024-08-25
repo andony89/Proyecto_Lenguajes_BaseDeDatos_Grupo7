@@ -231,34 +231,41 @@ public class VentasFrame extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
-            // Obtener el ID de la venta desde el campo de texto
-            int ventaID = Integer.parseInt(txfVentaID.getText());
+            int ventaID;
+            try {
+                ventaID = Integer.parseInt(txfVentaID.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "ID de venta inválido. Asegúrese de ingresar un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try (Connection conn = ConexionOracle.getConnection()) {
+                String sql = "{call pkg_ventas.LeerVenta(?, ?, ?, ?)}";
+                try (CallableStatement cs = conn.prepareCall(sql)) {
+                    cs.setInt(1, ventaID);
+                    cs.registerOutParameter(2, java.sql.Types.DATE);
+                    cs.registerOutParameter(3, java.sql.Types.INTEGER);
+                    cs.registerOutParameter(4, java.sql.Types.DOUBLE);
+                    cs.execute();
 
-            // Llamar al procedimiento almacenado para buscar la venta
-            Connection conn = ConexionOracle.getConnection();
-            CallableStatement cs = conn.prepareCall("{call LeerVenta(?, ?, ?, ?)}");
-            cs.setInt(1, ventaID);
-            cs.registerOutParameter(2, java.sql.Types.DATE);
-            cs.registerOutParameter(3, java.sql.Types.INTEGER);
-            cs.registerOutParameter(4, java.sql.Types.DOUBLE);
-            cs.execute();
+                    limpiarTabla();
+                    DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
 
-            // Limpiar la tabla y agregar el resultado de la búsqueda
-            limpiarTabla();
-            DefaultTableModel model = (DefaultTableModel) tableVentas.getModel();
-            model.addRow(new Object[]{
-                ventaID,
-                cs.getDate(2),
-                cs.getInt(3),
-                cs.getDouble(4)
-            });
-
-            cs.close();
-            conn.close();
+                    Date fecha = cs.getDate(2);
+                    if (fecha != null) {
+                        model.addRow(new Object[]{
+                            ventaID,
+                            fecha,
+                            cs.getInt(3),
+                            cs.getDouble(4)
+                        });
+                    } else {
+                        JOptionPane.showMessageDialog(this, "No se encontró la venta con el ID especificado.");
+                    }
+                }
+            }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al buscar la venta: " + ex.getMessage());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "ID de venta inválido: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al buscar la venta: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
 
     }//GEN-LAST:event_btnBuscarActionPerformed

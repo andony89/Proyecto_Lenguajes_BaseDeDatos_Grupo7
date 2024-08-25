@@ -17,6 +17,7 @@ import oracle.jdbc.OracleCallableStatement;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 public class ProductosFrame extends javax.swing.JFrame {
 
@@ -63,6 +64,8 @@ public class ProductosFrame extends javax.swing.JFrame {
         btnEditar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnObtenerProductos = new javax.swing.JButton();
+        LabelTriggerFecha = new javax.swing.JLabel();
+        txtTriggerFecha = new javax.swing.JTextField();
 
         label1.setText("label1");
 
@@ -131,6 +134,16 @@ public class ProductosFrame extends javax.swing.JFrame {
             }
         });
 
+        LabelTriggerFecha.setText("Última Modificación:");
+        LabelTriggerFecha.setBorder(new javax.swing.border.MatteBorder(null));
+
+        txtTriggerFecha.setEditable(false);
+        txtTriggerFecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTriggerFechaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -156,7 +169,9 @@ public class ProductosFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(Precio)
                                 .addGap(18, 18, 18)
-                                .addComponent(txfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnObtenerProductos))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(Stock)
                                 .addGap(18, 18, 18)
@@ -174,8 +189,10 @@ public class ProductosFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(btnEliminar)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnObtenerProductos)))
-                        .addGap(0, 127, Short.MAX_VALUE)))
+                                .addComponent(LabelTriggerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTriggerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 76, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -192,7 +209,8 @@ public class ProductosFrame extends javax.swing.JFrame {
                     .addComponent(CategoriaID)
                     .addComponent(txfCategoriaID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Precio)
-                    .addComponent(txfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnObtenerProductos))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Stock)
@@ -203,8 +221,9 @@ public class ProductosFrame extends javax.swing.JFrame {
                     .addComponent(btnBuscar)
                     .addComponent(btnEditar)
                     .addComponent(btnEliminar)
-                    .addComponent(btnObtenerProductos))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(LabelTriggerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTriggerFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -213,15 +232,15 @@ public class ProductosFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -244,6 +263,12 @@ public class ProductosFrame extends javax.swing.JFrame {
                 stmt.setInt(5, proveedorID);
                 stmt.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Producto agregado exitosamente.");
+
+                // Obtener la fecha actual
+                Date fechaActual = new Date(System.currentTimeMillis());
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                txtTriggerFecha.setText(sdf.format(fechaActual));
+
                 actualizarTabla(); // Actualizar la tabla después de agregar
                 limpiarCampos();   // Limpiar los campos de entrada
             }
@@ -267,29 +292,48 @@ public class ProductosFrame extends javax.swing.JFrame {
         modelo.setRowCount(0);
 
         try (Connection conn = ConexionOracle.getConnection()) {
-            String sql = "{call leer_producto(?, ?)}";
+            String sql = "{call pkg_productos.LeerProducto(?, ?, ?, ?, ?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
                 stmt.setInt(1, productoID);
-                stmt.registerOutParameter(2, OracleTypes.CURSOR);
-                stmt.execute();
-                ResultSet rs = (ResultSet) stmt.getObject(2);
 
-                if (rs.next()) {
+                // Registrar los parámetros de salida
+                stmt.registerOutParameter(2, Types.VARCHAR);   // p_Nombre
+                stmt.registerOutParameter(3, Types.NUMERIC);    // p_CategoriaID
+                stmt.registerOutParameter(4, Types.NUMERIC);    // p_Precio
+                stmt.registerOutParameter(5, Types.NUMERIC);    // p_Slock
+                stmt.registerOutParameter(6, Types.NUMERIC);    // p_ProveedorID
+
+                stmt.execute();
+
+                // Obtener los valores de los parámetros de salida
+                String nombre = stmt.getString(2);
+                int categoriaID = stmt.getInt(3);
+                double precio = stmt.getDouble(4);
+                int slock = stmt.getInt(5);
+                int proveedorID = stmt.getInt(6);
+
+                if (nombre != null) {
                     // Agregar el producto encontrado a la tabla
                     Object[] row = new Object[]{
-                        rs.getInt("ProductoID"),
-                        rs.getString("Nombre"),
-                        rs.getInt("CategoriaID"),
-                        rs.getDouble("Precio"),
-                        rs.getInt("Slock"),
-                        rs.getInt("ProveedorID")
+                        productoID,
+                        nombre,
+                        categoriaID,
+                        precio,
+                        slock,
+                        proveedorID
                     };
                     modelo.addRow(row);
+
+                    // Mostrar la fecha de modificación en el campo correspondiente
+                    // (Asegúrate de tener un campo de fecha de modificación en la base de datos)
+                    Date fechaModificacion = null; // Obtener la fecha de modificación desde la base de datos
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                    txtTriggerFecha.setText(fechaModificacion != null ? sdf.format(fechaModificacion) : "No disponible");
                 } else {
                     JOptionPane.showMessageDialog(this, "Producto no encontrado.");
+                    txtTriggerFecha.setText(""); // Limpiar el campo si no se encuentra el producto
                 }
 
-                rs.close(); // Cierra el ResultSet
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -374,6 +418,10 @@ public class ProductosFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnObtenerProductosActionPerformed
 
+    private void txtTriggerFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTriggerFechaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTriggerFechaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -388,7 +436,7 @@ public class ProductosFrame extends javax.swing.JFrame {
 
     private void actualizarTabla() {
         DefaultTableModel modelo = (DefaultTableModel) TableProductos.getModel();
-        modelo.setRowCount(0); 
+        modelo.setRowCount(0);
 
         try (Connection conn = ConexionOracle.getConnection()) {
             String sql = "{call ObtenerProductos(?)}";
@@ -409,7 +457,7 @@ public class ProductosFrame extends javax.swing.JFrame {
                     modelo.addRow(row);
                 }
 
-                rs.close(); 
+                rs.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -451,6 +499,7 @@ public class ProductosFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel CategoriaID;
+    private javax.swing.JLabel LabelTriggerFecha;
     private javax.swing.JLabel Nombre;
     private javax.swing.JLabel Precio;
     private javax.swing.JLabel ProductoID;
@@ -471,5 +520,6 @@ public class ProductosFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txfProductoID;
     private javax.swing.JTextField txfProveedorID;
     private javax.swing.JTextField txfStock;
+    private javax.swing.JTextField txtTriggerFecha;
     // End of variables declaration//GEN-END:variables
 }

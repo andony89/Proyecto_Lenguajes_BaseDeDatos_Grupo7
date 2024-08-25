@@ -276,56 +276,56 @@ public class FacturaFrame extends javax.swing.JFrame {
 
         try {
             // Convertir el ID de factura a número
-            int facturaID = Integer.parseInt(facturaIDText);
+            int facturaID;
+            try {
+                facturaID = Integer.parseInt(facturaIDText);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "El ID de factura debe ser un número válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
 
             // Crear la conexión a la base de datos
-            Connection conn = ConexionOracle.getConnection();
+            try (Connection conn = ConexionOracle.getConnection()) {
+                // Llamar al procedimiento almacenado
+                String sql = "{call pkg_factura.LeerFactura(?, ?, ?, ?, ?, ?)}";
+                try (CallableStatement cstmt = conn.prepareCall(sql)) {
+                    cstmt.setInt(1, facturaID);
+                    cstmt.registerOutParameter(2, java.sql.Types.NUMERIC);  // VentaID
+                    cstmt.registerOutParameter(3, java.sql.Types.NUMERIC);  // ProductoID
+                    cstmt.registerOutParameter(4, java.sql.Types.NUMERIC);  // Cantidad
+                    cstmt.registerOutParameter(5, java.sql.Types.NUMERIC);  // PrecioUnitario
+                    cstmt.registerOutParameter(6, java.sql.Types.NUMERIC);  // PrecioTotal
 
-            // Llamar al procedimiento almacenado
-            CallableStatement cstmt = conn.prepareCall("{call LeerFactura(?, ?, ?, ?, ?, ?)}");
-            cstmt.setInt(1, facturaID);
-            cstmt.registerOutParameter(2, OracleTypes.NUMBER);  // VentaID
-            cstmt.registerOutParameter(3, OracleTypes.NUMBER);  // ProductoID
-            cstmt.registerOutParameter(4, OracleTypes.NUMBER);  // Cantidad
-            cstmt.registerOutParameter(5, OracleTypes.NUMBER);  // PrecioUnitario
-            cstmt.registerOutParameter(6, OracleTypes.NUMBER);  // PrecioTotal
+                    // Ejecutar el procedimiento
+                    cstmt.execute();
 
-            // Ejecutar el procedimiento
-            cstmt.execute();
+                    // Obtener los resultados del procedimiento almacenado
+                    int ventaID = cstmt.getInt(2);
+                    int productoID = cstmt.getInt(3);
+                    int cantidad = cstmt.getInt(4);
+                    double precioUnitario = cstmt.getDouble(5);
+                    double precioTotal = cstmt.getDouble(6);
 
-            // Obtener los resultados del procedimiento almacenado
-            int ventaID = cstmt.getInt(2);
-            int productoID = cstmt.getInt(3);
-            int cantidad = cstmt.getInt(4);
-            double precioUnitario = cstmt.getDouble(5);
-            double precioTotal = cstmt.getDouble(6);
+                    // Limpiar los datos existentes en el modelo de la tabla
+                    DefaultTableModel model = (DefaultTableModel) tableFactura.getModel();
+                    model.setRowCount(0);
 
-            // Cerrar el CallableStatement y la conexión
-            cstmt.close();
-            conn.close();
+                    // Agregar la fila con los datos obtenidos
+                    model.addRow(new Object[]{ventaID, productoID, cantidad, precioUnitario, precioTotal});
 
-            // Crear un nuevo modelo de tabla
-            DefaultTableModel model = (DefaultTableModel) tableFactura.getModel();
-            // Limpiar los datos existentes en el modelo
-            model.setRowCount(0);
+                    // Establecer los resultados en los campos de texto
+                    txfVentaID.setText(String.valueOf(ventaID));
+                    txfProductoID.setText(String.valueOf(productoID));
+                    txfCantidad.setText(String.valueOf(cantidad));
+                    txfPrecioUnitario.setText(String.valueOf(precioUnitario));
 
-            // Agregar la fila con los datos obtenidos
-            model.addRow(new Object[]{ventaID, productoID, cantidad, precioUnitario, precioTotal});
-
-            // Establecer los resultados en los campos de texto
-            txfVentaID.setText(String.valueOf(ventaID));
-            txfProductoID.setText(String.valueOf(productoID));
-            txfCantidad.setText(String.valueOf(cantidad));
-            txfPrecioUnitario.setText(String.valueOf(precioUnitario));
-
-            // Calcular y mostrar el PrecioTotal
-            double calculoPrecioTotal = cantidad * precioUnitario;
-            JOptionPane.showMessageDialog(this, "Precio Total Calculado: " + calculoPrecioTotal, "Resultado", JOptionPane.INFORMATION_MESSAGE);
-
+                    // Mostrar el PrecioTotal
+                    JOptionPane.showMessageDialog(this, "Precio Total: " + precioTotal, "Resultado", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al buscar la factura: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El ID de factura debe ser un número válido.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 

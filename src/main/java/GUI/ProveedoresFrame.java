@@ -251,34 +251,28 @@ public class ProveedoresFrame extends javax.swing.JFrame {
             return;
         }
 
-        // Limpia la tabla antes de mostrar los datos del proveedor buscado
         modeloTabla.setRowCount(0);
 
-        try {
-            Connection conn = ConexionOracle.getConnection();
-            CallableStatement cstmt = conn.prepareCall("{call leer_proveedor(?, ?)}");
+        try (Connection conn = ConexionOracle.getConnection(); CallableStatement cstmt = conn.prepareCall("{call pkg_proveedores.LeerProveedor(?, ?, ?, ?, ?)}")) {
+
             cstmt.setInt(1, proveedorID);
-            cstmt.registerOutParameter(2, OracleTypes.CURSOR);
+            cstmt.registerOutParameter(2, OracleTypes.VARCHAR); // p_Nombre
+            cstmt.registerOutParameter(3, OracleTypes.VARCHAR); // p_Telefono
+            cstmt.registerOutParameter(4, OracleTypes.VARCHAR); // p_Direccion
+            cstmt.registerOutParameter(5, OracleTypes.VARCHAR); // p_Email
+
             cstmt.execute();
+            String nombre = cstmt.getString(2);
+            String telefono = cstmt.getString(3);
+            String direccion = cstmt.getString(4);
+            String email = cstmt.getString(5);
 
-            // Obtener el cursor del procedimiento
-            ResultSet rs = (ResultSet) cstmt.getObject(2);
-
-            if (rs.next()) {
-                int id = rs.getInt("ProveedorID");
-                String nombre = rs.getString("Nombre");
-                String telefono = rs.getString("Telefono");
-                String direccion = rs.getString("Direccion");
-                String email = rs.getString("Email");
-
-                modeloTabla.addRow(new Object[]{id, nombre, telefono, direccion, email});
+            if (nombre != null) {
+                modeloTabla.addRow(new Object[]{proveedorID, nombre, telefono, direccion, email});
             } else {
                 JOptionPane.showMessageDialog(this, "Proveedor no encontrado.", "Info", JOptionPane.INFORMATION_MESSAGE);
             }
 
-            rs.close();
-            cstmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al buscar el proveedor.", "Error", JOptionPane.ERROR_MESSAGE);
