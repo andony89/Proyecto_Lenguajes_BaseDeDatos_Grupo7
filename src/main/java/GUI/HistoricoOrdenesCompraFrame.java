@@ -268,7 +268,6 @@ public class HistoricoOrdenesCompraFrame extends javax.swing.JFrame {
                     // Establecer el parámetro IN
                     stmt.setInt(1, historicoID);
 
-                    // Registrar los parámetros OUT
                     stmt.registerOutParameter(2, Types.NUMERIC); // OrdenCompraID
                     stmt.registerOutParameter(3, Types.NUMERIC); // ProductoID
                     stmt.registerOutParameter(4, Types.NUMERIC); // Cantidad
